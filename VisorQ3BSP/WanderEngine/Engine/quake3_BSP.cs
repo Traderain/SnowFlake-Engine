@@ -518,6 +518,7 @@ namespace WanderEngine
             }
             catch
             {
+
             }
             BSPEntity[] entityArray = this.Entities.SeekEntitiesByClassname("trigger_multiple");
             if (entityArray.Length > 0)
