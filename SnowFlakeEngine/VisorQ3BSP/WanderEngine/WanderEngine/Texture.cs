@@ -29,7 +29,7 @@ using System.Drawing.Imaging;
 using OpenTK.Graphics.OpenGL;
 using PixelFormat = System.Drawing.Imaging.PixelFormat;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class Texture
     {

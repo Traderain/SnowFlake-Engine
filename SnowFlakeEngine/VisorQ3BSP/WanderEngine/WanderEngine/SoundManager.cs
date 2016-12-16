@@ -29,7 +29,7 @@ using System.Collections;
 using System.Windows.Forms;
 using Math3D;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     // miki-sound-off using SoundBuffer = Microsoft.DirectX.DirectSound.Buffer;
 

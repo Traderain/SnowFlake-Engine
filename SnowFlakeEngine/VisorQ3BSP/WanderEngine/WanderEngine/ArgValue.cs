@@ -24,7 +24,7 @@ This file is part of VisorQ3BSP.
 
 #endregion
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class ArgValue
     {

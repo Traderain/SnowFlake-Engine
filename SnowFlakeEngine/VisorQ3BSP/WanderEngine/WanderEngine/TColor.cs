@@ -26,7 +26,7 @@ This file is part of VisorQ3BSP.
 
 using System.Drawing;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     /// <summary>
     ///     Represents a four component color value (red, green, blue, alpha).

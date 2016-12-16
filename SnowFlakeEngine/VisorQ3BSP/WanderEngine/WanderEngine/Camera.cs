@@ -27,7 +27,7 @@ This file is part of VisorQ3BSP.
 using System;
 using Math3D;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class Camera
     {

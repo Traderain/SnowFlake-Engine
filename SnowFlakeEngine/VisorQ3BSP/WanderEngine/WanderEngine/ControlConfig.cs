@@ -26,7 +26,7 @@ This file is part of VisorQ3BSP.
 
 using OpenTK.Input;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     // miki-input-off using Microsoft.DirectX.DirectInput;
     

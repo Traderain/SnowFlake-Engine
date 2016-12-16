@@ -10,7 +10,7 @@ using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     // miki-play-off using VoiceClient = Microsoft.DirectX.DirectPlay.Voice.Client;
     // miki-play-off using PlayClient = Microsoft.DirectX.DirectPlay.Client;

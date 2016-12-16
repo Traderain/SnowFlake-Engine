@@ -28,7 +28,7 @@ using System;
 using System.Drawing;
 using OpenTK.Graphics.OpenGL;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class Text2D : IDisposable
     {

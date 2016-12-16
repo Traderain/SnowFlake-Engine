@@ -1,7 +1,7 @@
 ﻿using System.Drawing;
 using System.Windows.Forms;
 
-namespace SnowFlake_BSP.Splash
+namespace BSP.Splash
 {
     public partial class SplashForm : Form
     {

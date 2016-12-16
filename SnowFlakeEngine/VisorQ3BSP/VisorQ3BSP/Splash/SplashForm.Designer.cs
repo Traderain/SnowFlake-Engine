@@ -1,4 +1,4 @@
-﻿namespace SnowFlake_BSP.Splash
+﻿namespace BSP.Splash
 {
     partial class SplashForm
     {

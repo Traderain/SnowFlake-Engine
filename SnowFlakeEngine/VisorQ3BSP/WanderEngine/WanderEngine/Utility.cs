@@ -27,7 +27,7 @@ This file is part of VisorQ3BSP.
 using System;
 using System.IO;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public abstract class Utility
     {

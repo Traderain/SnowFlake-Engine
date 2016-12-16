@@ -26,7 +26,7 @@ This file is part of VisorQ3BSP.
 
 using OpenTK.Graphics.OpenGL;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class Frustrum
     {

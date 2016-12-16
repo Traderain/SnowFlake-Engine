@@ -28,7 +28,7 @@ using System;
 using System.Collections;
 using Math3D;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class ForceCollection : ICollection, IEnumerable
     {

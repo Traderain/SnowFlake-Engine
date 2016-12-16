@@ -29,7 +29,7 @@ using System.IO;
 using Math3D;
 using OpenTK.Graphics.OpenGL;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class MD2Model
     {

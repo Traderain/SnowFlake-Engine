@@ -2,14 +2,14 @@ using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
+using BSP.Splash;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
-using SnowFlake_BSP.Splash;
-using WanderEngine.WanderEngine;
+using SnowflakeEngine.WanderEngine;
 
-namespace SnowFlake_BSP
+namespace BSP
 {
 	public class Game : GameWindow
 	{

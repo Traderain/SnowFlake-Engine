@@ -26,7 +26,7 @@ This file is part of VisorQ3BSP.
 
 using System;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class Plane
     {

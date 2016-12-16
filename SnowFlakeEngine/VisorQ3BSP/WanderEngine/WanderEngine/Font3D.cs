@@ -28,7 +28,7 @@ using System;
 using System.Text;
 using OpenTK.Graphics.OpenGL;
 
-namespace WanderEngine.WanderEngine
+namespace SnowflakeEngine.WanderEngine
 {
     public class Font3D : IDisposable
     {
