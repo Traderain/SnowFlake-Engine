@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.25420.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowFlakeEngine", "WanderEngine\SnowFlakeEngine.csproj", "{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Math3D", "Math3D\Math3D.csproj", "{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSP", "VisorQ3BSP\BSP.csproj", "{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Mixed Platforms = Debug|Mixed Platforms
+		Debug|x86 = Debug|x86
+		Release|Mixed Platforms = Release|Mixed Platforms
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Debug|x86.Build.0 = Debug|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Release|x86.ActiveCfg = Release|Any CPU
+		{7D284006-EAAB-4A8E-B8C3-8DDFEFF36A76}.Release|x86.Build.0 = Release|Any CPU
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Debug|x86.ActiveCfg = Debug|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Debug|x86.Build.0 = Debug|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Release|Mixed Platforms.Build.0 = Release|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Release|x86.ActiveCfg = Release|x86
+		{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}.Release|x86.Build.0 = Release|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Debug|x86.ActiveCfg = Debug|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Debug|x86.Build.0 = Debug|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Release|Mixed Platforms.Build.0 = Release|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Release|x86.ActiveCfg = Release|x86
+		{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}.Release|x86.Build.0 = Release|x86
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
