@@ -51,6 +51,12 @@
                 sf.UdpateStatusText(Text);
         }
 
+        public static void UpdatePercentage(int percentage)
+        {
+            if(sf != null)
+                sf.UpdateProgress(percentage);
+        }
+
         /// <summary>
         ///     Update text with message color defined as green/yellow/red/ for success/warning/failure
         /// </summary>

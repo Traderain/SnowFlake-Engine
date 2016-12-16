@@ -38,6 +38,18 @@ namespace SnowFlake_BSP.Splash
             Close();
         }
 
+        public void UpdateProgress(int percentage)
+        {
+            if (InvokeRequired)
+            {
+                // We're not in the UI thread, so we need to call BeginInvoke
+                BeginInvoke(new StringParameterDelegate(UdpateStatusText), Text);
+                return;
+            }
+            // Must be on the UI thread if we've got this far
+            progressBar1.Value = percentage;
+        }
+
         public void UdpateStatusText(string Text)
         {
             if (InvokeRequired)
