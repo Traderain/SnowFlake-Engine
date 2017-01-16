@@ -1,6 +1,9 @@
 using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.InteropServices;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using BSP.Splash;
 using OpenTK;
@@ -18,6 +21,13 @@ namespace BSP
 		//protected ProjectionType typeProjection = ProjectionType.Perspective;
 		protected ClearBufferMask maskClearBuffer = ClearBufferMask.ColorBufferBit;
 		private SplashForm sf = new SplashForm();
+		public static List<DebugMessage> DebugMessages = new List<DebugMessage>();
+
+		public struct DebugMessage
+		{
+			public ConsoleColor color;
+			public string msg;
+		}
 
 		#region Constructor
 
@@ -27,22 +37,24 @@ namespace BSP
 			{
 				Title = "SnowFlake Engine";
 				VSync = VSyncMode.Off;
+				Console.WriteLine("[ENGINE] - VSync: " + VSync);
 				SEngine = new Engine(this);
 
 				var splashthread = new Thread(SplashScreen.ShowSplashScreen) {IsBackground = true};
 				splashthread.Start();
 				SplashScreen.UpdatePercentage(10);
 				SplashScreen.UdpateStatusTextWithStatus("Loading BSP map: level.bsp", TypeOfMessage.Success);
+				Console.WriteLine(@"[ENGINE] - Loading level outpost.bsp");
 				SplashScreen.UpdatePercentage(20);
-				SEngine.LoadMap(Engine.Quake3FilesPath +
-								Utility.AdaptRelativePathToPlatform("maps/"), "outpost.bsp");
+				SEngine.LoadMap(Engine.Quake3FilesPath + Utility.AdaptRelativePathToPlatform("maps/"), "outpost.bsp");
+				Console.WriteLine(@"[ENGINE] - Loaded map outpost.bsp");
 				SplashScreen.UpdatePercentage(60);
 				SplashScreen.UpdatePercentage(90);
 				SplashScreen.CloseSplashScreen();
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.InnerException.Message, ex.Message);
+				if (ex.InnerException != null) MessageBox.Show(ex.InnerException.Message, ex.Message);
 			}
 		}
 
@@ -68,7 +80,7 @@ namespace BSP
 			}
 			catch (Exception ex)
 			{
-				MessageBox.Show(ex.InnerException.Message, ex.Message);
+				if (ex.InnerException != null) MessageBox.Show(ex.InnerException.Message, ex.Message);
 			}
 		}
 
@@ -77,16 +89,29 @@ namespace BSP
 			base.OnUpdateFrame(e);
 
 			if (Keyboard[Key.Escape])
-				Exit();
+			{
+#if DEBUG
+				Console.WriteLine(@"Are you sure you would like to exit? (Y/N)");
+				Console.WriteLine();
+				Console.Write(@"> ");
+				var input = Console.ReadLine();
+			    if (input.ToUpper().Contains("Y"))
+			    {
+			        Exit();
+			    }
+#endif
+#if !DEBUG
+			   this.Exit();
+#endif
+			}
 		}
 
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
 			base.OnRenderFrame(e);
 
-			//Title = "FPS: " + (1 / e.Time);
-			if (SEngine != null)
-				SEngine.UpdateFrame((float) e.Time);
+			Title = "FPS: " + (1 / e.Time).ToString("F1");
+			SEngine?.UpdateFrame((float) e.Time);
 
 			SwapBuffers();
 		}
@@ -95,19 +120,30 @@ namespace BSP
 		{
 			base.OnUnload(e);
 
-			if (SEngine != null)
-				SEngine.DestroyAll();
+			SEngine?.DestroyAll();
 		}
 
 		[STAThread]
 		public static void Main(string[] args)
 		{
+			AllocConsole();
+			Console.Title = (@"SNOWFLAKE ENGINE DEBUG CONSOLE");
+			Console.WriteLine(@"[ENGINE] - Starting");
 			Engine.Quake3FilesPath = Utility.AdaptRelativePathToPlatform("../../../../media/Quake3/");
-
+			Console.WriteLine(@"[ENGINE] - Strating new game!");
 			using (var g = new Game())
 			{
 				g.Run();
 			}
 		}
+
+		public async void DebugConsole()
+		{
+
+		}
+
+		[DllImport("kernel32.dll", SetLastError = true)]
+		[return: MarshalAs(UnmanagedType.Bool)]
+		static extern bool AllocConsole();
 	}
 }

@@ -135,22 +135,28 @@ namespace SnowflakeEngine.WanderEngine
                 var vector4 = Vertices[num2 + Faces[i].VertexIndices[0]];
                 var vector5 = Vertices[num2 + Faces[i].VertexIndices[2]];
                 var vector6 = Vertices[num2 + Faces[i].VertexIndices[1]];
-                var vector7 = new Vector3f();
-                vector7.X = vector.X + (Interpolation*(vector4.X - vector.X));
-                vector7.Y = vector.Y + (Interpolation*(vector4.Y - vector.Y));
-                vector7.Z = vector.Z + (Interpolation*(vector4.Z - vector.Z));
+                var vector7 = new Vector3f
+                {
+                    X = vector.X + (Interpolation*(vector4.X - vector.X)),
+                    Y = vector.Y + (Interpolation*(vector4.Y - vector.Y)),
+                    Z = vector.Z + (Interpolation*(vector4.Z - vector.Z))
+                };
                 GL.TexCoord2(TextureCoords[Faces[i].TextureIndices[0]].X, TextureCoords[Faces[i].TextureIndices[0]].Y);
                 GL.Vertex3(vector7.X, vector7.Y, vector7.Z);
-                var vector8 = new Vector3f();
-                vector8.X = vector2.X + (Interpolation*(vector5.X - vector2.X));
-                vector8.Y = vector2.Y + (Interpolation*(vector5.Y - vector2.Y));
-                vector8.Z = vector2.Z + (Interpolation*(vector5.Z - vector2.Z));
+                var vector8 = new Vector3f
+                {
+                    X = vector2.X + (Interpolation*(vector5.X - vector2.X)),
+                    Y = vector2.Y + (Interpolation*(vector5.Y - vector2.Y)),
+                    Z = vector2.Z + (Interpolation*(vector5.Z - vector2.Z))
+                };
                 GL.TexCoord2(TextureCoords[Faces[i].TextureIndices[2]].X, TextureCoords[Faces[i].TextureIndices[2]].Y);
                 GL.Vertex3(vector8.X, vector8.Y, vector8.Z);
-                var vector9 = new Vector3f();
-                vector9.X = vector3.X + (Interpolation*(vector6.X - vector3.X));
-                vector9.Y = vector3.Y + (Interpolation*(vector6.Y - vector3.Y));
-                vector9.Z = vector3.Z + (Interpolation*(vector6.Z - vector3.Z));
+                var vector9 = new Vector3f
+                {
+                    X = vector3.X + (Interpolation*(vector6.X - vector3.X)),
+                    Y = vector3.Y + (Interpolation*(vector6.Y - vector3.Y)),
+                    Z = vector3.Z + (Interpolation*(vector6.Z - vector3.Z))
+                };
                 GL.TexCoord2(TextureCoords[Faces[i].TextureIndices[1]].X, TextureCoords[Faces[i].TextureIndices[1]].Y);
                 GL.Vertex3(vector9.X, vector9.Y, vector9.Z);
             }
