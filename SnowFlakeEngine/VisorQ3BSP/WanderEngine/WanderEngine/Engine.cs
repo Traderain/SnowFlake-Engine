@@ -12,6 +12,34 @@ using OpenTK.Input;
 
 namespace SnowflakeEngine.WanderEngine
 {
+	internal class DebugWindow
+	{
+		public enum msgtype
+		{
+			engine,
+			game,
+			error
+		}
+
+		public static void Log(string msg, msgtype type = msgtype.engine)
+		{
+#if DEBUG
+			switch (type)
+			{
+				case msgtype.engine:
+					Console.ForegroundColor = ConsoleColor.DarkGreen;
+					break;
+				case msgtype.game:
+					Console.ForegroundColor = ConsoleColor.White;
+					break;
+				case msgtype.error:
+					Console.ForegroundColor = ConsoleColor.Red;
+					break;
+			}
+			Console.WriteLine(@"[" + type.ToString().ToUpper() + @"]: " + msg);
+#endif
+		}
+	}
 	// miki-play-off using VoiceClient = Microsoft.DirectX.DirectPlay.Voice.Client;
 	// miki-play-off using PlayClient = Microsoft.DirectX.DirectPlay.Client;
 	// miki-input-off using InputDevice = Microsoft.DirectX.DirectInput.Device;
@@ -100,7 +128,7 @@ namespace SnowflakeEngine.WanderEngine
 		public Engine(GameWindow gameWin)
 		{
 			if (gameWin == null)
-				throw new ArgumentNullException("Argumento nulo en el constructor de Engine");
+				throw new ArgumentNullException("Not proper arguments supplied.");
 
 			this.gameWin = gameWin;
 			winHeight = gameWin.Height;
@@ -115,10 +143,7 @@ namespace SnowflakeEngine.WanderEngine
 
 		public bool Connected { get; private set; }
 
-		public bool IsDead
-		{
-			get { return (DeathTime > 0f); }
-		}
+		public bool IsDead => (DeathTime > 0f);
 
 		public bool IsPaused { get; set; } = false;
 		public string ModelName { get; set; } = "";
@@ -129,13 +154,12 @@ namespace SnowflakeEngine.WanderEngine
 		{
 			get
 			{
-				if (Weapon == WeaponType.Knife)
+				switch (Weapon)
 				{
-					return StabTime;
-				}
-				if (Weapon == WeaponType.Laser)
-				{
-					return LaserTime;
+					case WeaponType.Knife:
+						return StabTime;
+					case WeaponType.Laser:
+						return LaserTime;
 				}
 				return 0f;
 			}
@@ -849,7 +873,7 @@ namespace SnowflakeEngine.WanderEngine
 			Forces[StrafeForce].Acceleration = new Vector3f(-150000f, -150000f, -150000f);
 			GravityForce = Forces.Add(new Force());
 			Forces[GravityForce].MaxVelocity = new Vector3f(0f, 1500f, 0f);
-			Forces[GravityForce].Direction.Y = -4.5f;
+			Forces[GravityForce].Direction.Y = -6.674f;
 			JumpForce = Forces.Add(new Force());
 			Forces[JumpForce].MaxVelocity = new Vector3f(0f, 500f, 0f);
 			Forces[JumpForce].Acceleration.Y = -40000f;
@@ -962,11 +986,11 @@ namespace SnowflakeEngine.WanderEngine
 			Directory.SetCurrentDirectory(DirectoryPath);
 			CurrentMap = new BSPFile(MapName);
 			GL.MatrixMode(MatrixMode.Modelview);
-			Console.WriteLine("[ENGINE] - Matrixmode: " + MatrixMode.Modelview);
+			DebugWindow.Log("Matrixmode: " + MatrixMode.Modelview);
 			GL.LoadIdentity();
-			Console.WriteLine("[ENGINE] - Loaded GL Identity");
+			DebugWindow.Log("Loaded GL Identity");
 			GL.MatrixMode(MatrixMode.Projection);
-			Console.WriteLine("[ENGINE] - Matrixmode: " + MatrixMode.Projection);
+			DebugWindow.Log("Matrixmode: " + MatrixMode.Projection);
 			GL.LoadIdentity();
 			var entityArray = CurrentMap.Entities.SeekEntitiesByClassname("info_player_deathmatch");
 			foreach (var entity in entityArray)
@@ -1003,7 +1027,7 @@ namespace SnowflakeEngine.WanderEngine
 					}
 				}
 			}
-			Console.WriteLine("[ENGINE] - Loaded map entities");
+			DebugWindow.Log("Loaded map entities");
 			OnResizeControl();
 			ChooseSpawnPoint();
 		}
@@ -1011,6 +1035,7 @@ namespace SnowflakeEngine.WanderEngine
 		private void OnResizeControl()
 		{
 			GL.Viewport(0, 0, winWidth, winHeight);
+			DebugWindow.Log("Window resize: H:" + winHeight + " W:" + winWidth);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
 			var num = (winWidth + 0.1f)/winHeight;
@@ -1726,7 +1751,7 @@ namespace SnowflakeEngine.WanderEngine
 			{
 				if (Forces[GravityForce].GetVelocityY() <= 0f)
 				{
-					Forces[GravityForce].Acceleration.Y = 20000f;
+					Forces[GravityForce].Acceleration.Y = 40000f;
 				}
 			}
 			else

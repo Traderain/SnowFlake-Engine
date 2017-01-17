@@ -7,7 +7,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnowFlakeEngine", "WanderEn
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Math3D", "Math3D\Math3D.csproj", "{B9D97EF4-A2F9-4AB5-B81A-C7168B6745A1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BSP", "VisorQ3BSP\BSP.csproj", "{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Loader", "VisorQ3BSP\Loader.csproj", "{E4A4CB8D-0D24-41E5-BDFD-6F4AFCF8E823}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

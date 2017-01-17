@@ -14,6 +14,34 @@ using SnowflakeEngine.WanderEngine;
 
 namespace BSP
 {
+	internal class DebugWindow
+	{
+		public enum msgtype
+		{
+			engine,
+			game,
+			error
+		}
+
+		public static void Log(string msg,msgtype type = msgtype.engine)
+		{
+#if DEBUG
+			switch (type)
+			{
+				case msgtype.engine:
+					Console.ForegroundColor = ConsoleColor.DarkGreen;
+					break;
+				case msgtype.game:
+					Console.ForegroundColor = ConsoleColor.White;
+					break;
+				case msgtype.error:
+					Console.ForegroundColor = ConsoleColor.Red;
+					break;
+			}
+			Console.WriteLine(@"[" + type.ToString().ToUpper() + @"]: " + msg);
+#endif
+		}
+	}
 	public class Game : GameWindow
 	{
 		private readonly Engine SEngine;
@@ -37,17 +65,17 @@ namespace BSP
 			{
 				Title = "SnowFlake Engine";
 				VSync = VSyncMode.Off;
-				Console.WriteLine("[ENGINE] - VSync: " + VSync);
+				DebugWindow.Log("VSync: " + VSync);
 				SEngine = new Engine(this);
 
 				var splashthread = new Thread(SplashScreen.ShowSplashScreen) {IsBackground = true};
 				splashthread.Start();
 				SplashScreen.UpdatePercentage(10);
 				SplashScreen.UdpateStatusTextWithStatus("Loading BSP map: level.bsp", TypeOfMessage.Success);
-				Console.WriteLine(@"[ENGINE] - Loading level outpost.bsp");
+				DebugWindow.Log("Loading level outpost.bsp");
 				SplashScreen.UpdatePercentage(20);
 				SEngine.LoadMap(Engine.Quake3FilesPath + Utility.AdaptRelativePathToPlatform("maps/"), "outpost.bsp");
-				Console.WriteLine(@"[ENGINE] - Loaded map outpost.bsp");
+				DebugWindow.Log("Loaded map outpost.bsp");
 				SplashScreen.UpdatePercentage(60);
 				SplashScreen.UpdatePercentage(90);
 				SplashScreen.CloseSplashScreen();
@@ -91,14 +119,16 @@ namespace BSP
 			if (Keyboard[Key.Escape])
 			{
 #if DEBUG
+				Console.ForegroundColor = ConsoleColor.Red;
 				Console.WriteLine(@"Are you sure you would like to exit? (Y/N)");
+				Console.ForegroundColor = ConsoleColor.White;
 				Console.WriteLine();
 				Console.Write(@"> ");
 				var input = Console.ReadLine();
-			    if (input.ToUpper().Contains("Y"))
-			    {
-			        Exit();
-			    }
+				if (input != null && input.ToUpper().Contains("Y"))
+				{
+					Exit();
+				}
 #endif
 #if !DEBUG
 			   this.Exit();
@@ -109,8 +139,9 @@ namespace BSP
 		protected override void OnRenderFrame(FrameEventArgs e)
 		{
 			base.OnRenderFrame(e);
-
+#if DEBUG
 			Title = "FPS: " + (1 / e.Time).ToString("F1");
+#endif
 			SEngine?.UpdateFrame((float) e.Time);
 
 			SwapBuffers();
@@ -128,18 +159,13 @@ namespace BSP
 		{
 			AllocConsole();
 			Console.Title = (@"SNOWFLAKE ENGINE DEBUG CONSOLE");
-			Console.WriteLine(@"[ENGINE] - Starting");
+			DebugWindow.Log("Starting");
 			Engine.Quake3FilesPath = Utility.AdaptRelativePathToPlatform("../../../../media/Quake3/");
-			Console.WriteLine(@"[ENGINE] - Strating new game!");
+			DebugWindow.Log("Starting new game!");
 			using (var g = new Game())
 			{
 				g.Run();
 			}
-		}
-
-		public async void DebugConsole()
-		{
-
 		}
 
 		[DllImport("kernel32.dll", SetLastError = true)]
