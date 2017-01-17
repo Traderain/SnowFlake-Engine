@@ -30,42 +30,42 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class NetworkPlayer
     {
-        private readonly Vector3f ColorMask = new Vector3f();
-        public int ID = -1;
+        private readonly Vector3F _colorMask = new Vector3F();
+        private float _maskTime;
+        public int Id = -1;
         public NetworkPlayerState InitialState;
         public string LaserSound = "";
         public bool Marked;
-        private float MaskTime;
         public string ModelName = "";
         public string Name = "No Name";
-        public MD2Model PlayerModel;
+        public Md2Model PlayerModel;
 
-        public NetworkPlayer(int ID, string Name, string ModelName, NetworkPlayerState InitialState, bool Marked)
+        public NetworkPlayer(int id, string name, string modelName, NetworkPlayerState initialState, bool marked)
         {
-            this.ID = ID;
-            this.Name = Name;
-            this.ModelName = ModelName;
-            this.InitialState = InitialState;
-            this.Marked = Marked;
+            Id = id;
+            Name = name;
+            ModelName = modelName;
+            InitialState = initialState;
+            Marked = marked;
         }
 
-        public void AddColorMask(float R, float G, float B, float Time)
+        public void AddColorMask(float r, float g, float b, float time)
         {
-            ColorMask.X = R;
-            ColorMask.Y = G;
-            ColorMask.Z = B;
-            MaskTime = Time;
+            _colorMask.X = r;
+            _colorMask.Y = g;
+            _colorMask.Z = b;
+            _maskTime = time;
         }
 
-        public void SetState(NetworkPlayerState NewState)
+        public void SetState(NetworkPlayerState newState)
         {
             lock (PlayerModel)
             {
-                if (NewState != null)
+                if (newState != null)
                 {
                     if (PlayerModel.ModelState != AnimationState.DeathFallFoward)
                     {
-                        if ((NewState.X != PlayerModel.Position.X) || (NewState.Z != PlayerModel.Position.Z))
+                        if ((newState.X != PlayerModel.Position.X) || (newState.Z != PlayerModel.Position.Z))
                         {
                             if (PlayerModel.ModelState != AnimationState.Run)
                             {
@@ -79,30 +79,30 @@ namespace SnowflakeEngine.WanderEngine
                             PlayerModel.ModelState = AnimationState.Stand;
                         }
                     }
-                    PlayerModel.Position.X = NewState.X;
-                    PlayerModel.Position.Y = (NewState.Y - (PlayerModel.BoundMax.Y/2f)) + PlayerModel.Center.Y;
-                    PlayerModel.Position.Z = NewState.Z;
-                    PlayerModel.Yaw = NewState.Yaw;
+                    PlayerModel.Position.X = newState.X;
+                    PlayerModel.Position.Y = (newState.Y - (PlayerModel.BoundMax.Y/2f)) + PlayerModel.Center.Y;
+                    PlayerModel.Position.Z = newState.Z;
+                    PlayerModel.Yaw = newState.Yaw;
                 }
             }
         }
 
-        public void Update(float TimeElapsed)
+        public void Update(float timeElapsed)
         {
             lock (PlayerModel)
             {
-                if (MaskTime > 0f)
+                if (_maskTime > 0f)
                 {
-                    PlayerModel.Update(TimeElapsed, ColorMask.X, ColorMask.Y, ColorMask.Z);
-                    MaskTime -= TimeElapsed;
+                    PlayerModel.Update(timeElapsed, _colorMask.X, _colorMask.Y, _colorMask.Z);
+                    _maskTime -= timeElapsed;
                 }
                 else if (Marked)
                 {
-                    PlayerModel.Update(TimeElapsed, 1f, 1f, 0f);
+                    PlayerModel.Update(timeElapsed, 1f, 1f, 0f);
                 }
                 else
                 {
-                    PlayerModel.Update(TimeElapsed);
+                    PlayerModel.Update(timeElapsed);
                 }
             }
         }

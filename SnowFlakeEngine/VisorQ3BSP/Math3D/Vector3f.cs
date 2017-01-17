@@ -26,21 +26,21 @@ using System;
 namespace Math3D
 {
     [Serializable]
-    public class Vector3f
+    public class Vector3F
     {
-        public float[] values = new float[3];
+        public float[] Values = new float[3];
 
         #region Constructores
 
-        public Vector3f()
+        public Vector3F()
         {
         }
 
-        public Vector3f(float x, float y, float z)
+        public Vector3F(float x, float y, float z)
         {
-            values[0] = x;
-            values[1] = y;
-            values[2] = z;
+            Values[0] = x;
+            Values[1] = y;
+            Values[2] = z;
         }
 
         #endregion Constructores
@@ -49,52 +49,52 @@ namespace Math3D
 
         public float X
         {
-            get { return values[0]; }
-            set { values[0] = value; }
+            get { return Values[0]; }
+            set { Values[0] = value; }
         }
 
         public float Y
         {
-            get { return values[1]; }
-            set { values[1] = value; }
+            get { return Values[1]; }
+            set { Values[1] = value; }
         }
 
         public float Z
         {
-            get { return values[2]; }
-            set { values[2] = value; }
+            get { return Values[2]; }
+            set { Values[2] = value; }
         }
 
         #endregion Propiedades
 
         #region Operadores
 
-        public static Vector3f operator +(Vector3f left, Vector3f right)
+        public static Vector3F operator +(Vector3F left, Vector3F right)
         {
-            return new Vector3f(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
+            return new Vector3F(left.X + right.X, left.Y + right.Y, left.Z + right.Z);
         }
 
-        public static Vector3f operator -(Vector3f left, Vector3f right)
+        public static Vector3F operator -(Vector3F left, Vector3F right)
         {
-            return new Vector3f(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
+            return new Vector3F(left.X - right.X, left.Y - right.Y, left.Z - right.Z);
         }
 
-        public static Vector3f operator *(float scalar, Vector3f right)
+        public static Vector3F operator *(float scalar, Vector3F right)
         {
-            return new Vector3f(right.X*scalar, right.Y*scalar, right.Z*scalar);
+            return new Vector3F(right.X*scalar, right.Y*scalar, right.Z*scalar);
         }
 
-        public static Vector3f operator +(float scalar, Vector3f right)
+        public static Vector3F operator +(float scalar, Vector3F right)
         {
-            return new Vector3f(right.X + scalar, right.Y + scalar, right.Z + scalar);
+            return new Vector3F(right.X + scalar, right.Y + scalar, right.Z + scalar);
         }
 
-        public static Vector3f operator *(Vector3f left, float scalar)
+        public static Vector3F operator *(Vector3F left, float scalar)
         {
-            return new Vector3f(left.X*scalar, left.Y*scalar, left.Z*scalar);
+            return new Vector3F(left.X*scalar, left.Y*scalar, left.Z*scalar);
         }
 
-        public static Vector3f operator -(Vector3f vec)
+        public static Vector3F operator -(Vector3F vec)
         {
             vec.X = -vec.X;
             vec.Y = -vec.Y;
@@ -116,7 +116,7 @@ namespace Math3D
         /// </summary>
         /// <param name="vector"></param>
         /// <returns></returns>
-        public float Dot(Vector3f vector)
+        public float Dot(Vector3F vector)
         {
             double dotProduct = 0.0f;
 
@@ -134,7 +134,7 @@ namespace Math3D
         /// <param name="tempRight">Second operand</param>
         /// <returns>The cross product of the two inputs</returns>
         /// <param name="result">The cross product of the two inputs</param>
-        public static void Cross(Vector3f left, Vector3f right, ref Vector3f result)
+        public static void Cross(Vector3F left, Vector3F right, ref Vector3F result)
         {
             result.X = left.Y*right.Z - left.Z*right.Y;
             result.Y = left.Z*right.X - left.X*right.Z;
@@ -145,25 +145,25 @@ namespace Math3D
         ///     Producto cruz entre este vector y v3param, el resultado se almacena en este mismo vector.
         ///     <para>this = this (cross) v3param</para>
         /// </summary>
-        /// <param name="v3param"></param>
-        public void Cross(Vector3f v3param)
+        /// <param name="v3Param"></param>
+        public void Cross(Vector3F v3Param)
         {
-            var cross = new Vector3f();
+            var cross = new Vector3F();
 
-            var auxX = (Y*v3param.Z) - (Z*v3param.Y);
-            var auxY = (Z*v3param.X) - (X*v3param.Z);
-            var auxZ = (X*v3param.Y) - (Y*v3param.X);
+            var auxX = (Y*v3Param.Z) - (Z*v3Param.Y);
+            var auxY = (Z*v3Param.X) - (X*v3Param.Z);
+            var auxZ = (X*v3Param.Y) - (Y*v3Param.X);
 
             X = auxX;
             Y = auxY;
             Z = auxZ;
         }
 
-        public void CopyFrom(Vector3f v3source)
+        public void CopyFrom(Vector3F v3Source)
         {
-            X = v3source.X;
-            Y = v3source.Y;
-            Z = v3source.Z;
+            X = v3Source.X;
+            Y = v3Source.Y;
+            Z = v3Source.Z;
         }
 
         public void Normalize()
@@ -189,7 +189,7 @@ namespace Math3D
         /// </remarks>
         /// <param name="normal">Normal vector on which this vector will be reflected.</param>
         /// <returns></returns>
-        public Vector3f Reflect(Vector3f normal)
+        public Vector3F Reflect(Vector3F normal)
         {
             return this - (2*Dot(normal)*normal);
         }
@@ -211,8 +211,8 @@ namespace Math3D
 
         public override bool Equals(object obj)
         {
-            if (obj is Vector3f)
-                return (this == (Vector3f) obj);
+            if (obj is Vector3F)
+                return (this == (Vector3F) obj);
             return false;
         }
 
@@ -226,7 +226,7 @@ namespace Math3D
         ///     this += v3
         /// </summary>
         /// <param name="v3"></param>
-        public void Sum(Vector3f v3)
+        public void Sum(Vector3F v3)
         {
             X += v3.X;
             Y += v3.Y;
@@ -238,7 +238,7 @@ namespace Math3D
         ///     this -= v3
         /// </summary>
         /// <param name="v3"></param>
-        public void Subtract(Vector3f v3)
+        public void Subtract(Vector3F v3)
         {
             X -= v3.X;
             Y -= v3.Y;
@@ -262,7 +262,7 @@ namespace Math3D
             Z = -Z;
         }
 
-        public static double Distance(Vector3f v1, Vector3f v2)
+        public static double Distance(Vector3F v1, Vector3F v2)
         {
             return
                 (
@@ -275,7 +275,7 @@ namespace Math3D
                     );
         }
 
-        public double Distance(Vector3f other)
+        public double Distance(Vector3F other)
         {
             return Distance(this, other);
         }
@@ -289,7 +289,7 @@ namespace Math3D
         /// <param name="v1"></param>
         /// <param name="v2"></param>
         /// <returns></returns>
-        public static double Angle(Vector3f v1, Vector3f v2)
+        public static double Angle(Vector3F v1, Vector3F v2)
         {
             v1.Normalize();
             v2.Normalize();
@@ -306,7 +306,7 @@ namespace Math3D
         /// </summary>
         /// <param name="other"></param>
         /// <returns></returns>
-        public double Angle(Vector3f other)
+        public double Angle(Vector3F other)
         {
             return Angle(this, other);
         }

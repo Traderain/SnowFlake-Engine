@@ -26,30 +26,30 @@ using System;
 namespace Math3D
 {
     [Serializable]
-    public class Vector2f
+    public class Vector2F
     {
-        public float[] values = new float[3];
+        public float[] Values = new float[3];
 
-        public Vector2f()
+        public Vector2F()
         {
         }
 
-        public Vector2f(float x, float y)
+        public Vector2F(float x, float y)
         {
-            values[0] = x;
-            values[1] = y;
+            Values[0] = x;
+            Values[1] = y;
         }
 
         public float X
         {
-            get { return values[0]; }
-            set { values[0] = value; }
+            get { return Values[0]; }
+            set { Values[0] = value; }
         }
 
         public float Y
         {
-            get { return values[1]; }
-            set { values[1] = value; }
+            get { return Values[1]; }
+            set { Values[1] = value; }
         }
     }
 }

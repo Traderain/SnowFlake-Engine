@@ -32,64 +32,64 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class ForceCollection : ICollection, IEnumerable
     {
-        private readonly Hashtable DisposableForce = new Hashtable();
-        private readonly ArrayList Forces = new ArrayList();
+        private readonly Hashtable _disposableForce = new Hashtable();
+        private readonly ArrayList _forces = new ArrayList();
 
-        public Force this[int Index]
+        public Force this[int index]
         {
-            get { return (Force) Forces[Index]; }
-            set { Forces[Index] = value; }
+            get { return (Force) _forces[index]; }
+            set { _forces[index] = value; }
         }
 
         public void CopyTo(Array array, int index)
         {
-            Forces.CopyTo(array, index);
+            _forces.CopyTo(array, index);
         }
 
         public IEnumerator GetEnumerator()
         {
-            return Forces.GetEnumerator();
+            return _forces.GetEnumerator();
         }
 
         public int Count
         {
-            get { return Forces.Count; }
+            get { return _forces.Count; }
         }
 
         public bool IsSynchronized
         {
-            get { return Forces.IsSynchronized; }
+            get { return _forces.IsSynchronized; }
         }
 
         public object SyncRoot
         {
-            get { return Forces.SyncRoot; }
+            get { return _forces.SyncRoot; }
         }
 
-        public int Add(Force NewForce)
+        public int Add(Force newForce)
         {
-            DisposableForce[NewForce] = false;
-            return Forces.Add(NewForce);
+            _disposableForce[newForce] = false;
+            return _forces.Add(newForce);
         }
 
-        public void AddDispoableForce(Force NewForce)
+        public void AddDispoableForce(Force newForce)
         {
-            DisposableForce[NewForce] = true;
-            Forces.Add(NewForce);
+            _disposableForce[newForce] = true;
+            _forces.Add(newForce);
         }
 
-        public void ApplyAllForces(Vector3f SourcePoint, float TimeElapsed)
+        public void ApplyAllForces(Vector3F sourcePoint, float timeElapsed)
         {
-            for (var i = 0; i < Forces.Count; i++)
+            for (var i = 0; i < _forces.Count; i++)
             {
-                var force = (Force) Forces[i];
+                var force = (Force) _forces[i];
                 if (force != null)
                 {
-                    force.Update(SourcePoint, TimeElapsed);
-                    if ((((bool) DisposableForce[force]) && (force.GetVelocityX() <= force.MinVelocity.X)) &&
+                    force.Update(sourcePoint, timeElapsed);
+                    if ((((bool) _disposableForce[force]) && (force.GetVelocityX() <= force.MinVelocity.X)) &&
                         ((force.GetVelocityY() <= force.MinVelocity.Y) && (force.GetVelocityZ() <= force.MinVelocity.Z)))
                     {
-                        Forces[i] = null;
+                        _forces[i] = null;
                     }
                 }
             }
@@ -97,27 +97,27 @@ namespace SnowflakeEngine.WanderEngine
 
         public void ClearDisposableForces()
         {
-            for (var i = 0; i < Forces.Count; i++)
+            for (var i = 0; i < _forces.Count; i++)
             {
-                var force = (Force) Forces[i];
-                if ((force != null) && ((bool) DisposableForce[force]))
+                var force = (Force) _forces[i];
+                if ((force != null) && ((bool) _disposableForce[force]))
                 {
                     force.SetVelocity(0f, 0f, 0f);
                 }
             }
         }
 
-        public void Remove(Force OldForce)
+        public void Remove(Force oldForce)
         {
-            DisposableForce.Remove(OldForce);
-            Forces.Remove(OldForce);
+            _disposableForce.Remove(oldForce);
+            _forces.Remove(oldForce);
         }
 
-        public void RemoveAt(int Index)
+        public void RemoveAt(int index)
         {
-            var key = Forces[Index];
-            DisposableForce.Remove(key);
-            Forces.RemoveAt(Index);
+            var key = _forces[index];
+            _disposableForce.Remove(key);
+            _forces.RemoveAt(index);
         }
     }
 }

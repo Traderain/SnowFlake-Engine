@@ -33,27 +33,27 @@ namespace SnowflakeEngine.WanderEngine
     {
         public const float DegreeToRadian = 0.01745329f;
 
-        public static float CapAngle(float Angle)
+        public static float CapAngle(float angle)
         {
-            if (Angle > 360f)
+            if (angle > 360f)
             {
-                Angle -= 360f;
+                angle -= 360f;
             }
-            if (Angle < 0f)
+            if (angle < 0f)
             {
-                Angle += 360f;
+                angle += 360f;
             }
-            return Angle;
+            return angle;
         }
 
-        public static float CosDeg(float Angle)
+        public static float CosDeg(float angle)
         {
-            return (float) Math.Cos(Angle*0.01745329f);
+            return (float) Math.Cos(angle*0.01745329f);
         }
 
-        public static float SinDeg(float Angle)
+        public static float SinDeg(float angle)
         {
-            return (float) Math.Sin(Angle*0.01745329f);
+            return (float) Math.Sin(angle*0.01745329f);
         }
 
         public static string AdaptRelativePathToPlatform(string relativePath)

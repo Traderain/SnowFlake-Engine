@@ -30,13 +30,13 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class CommandSet
     {
-        public Vector3f BoundMax = new Vector3f(20f, 5f, 20f);
-        public Vector3f BoundMin = new Vector3f(-20f, -40f, -20f);
+        public Vector3F BoundMax = new Vector3F(20f, 5f, 20f);
+        public Vector3F BoundMin = new Vector3F(-20f, -40f, -20f);
         public float[] Max = {20f, 5f, 20f};
-        public Vector3f MaxHeight = new Vector3f(0f, 10000f, 0f);
+        public Vector3F MaxHeight = new Vector3F(0f, 10000f, 0f);
         public float[] Min = {-20f, 40f, -20f};
-        public Vector2f PlayerLook = new Vector2f();
-        public Vector3f PlayerMovement = new Vector3f();
-        public Vector3f Step = new Vector3f(0f, 20f, 0f);
+        public Vector2F PlayerLook = new Vector2F();
+        public Vector3F PlayerMovement = new Vector3F();
+        public Vector3F Step = new Vector3F(0f, 20f, 0f);
     }
 }

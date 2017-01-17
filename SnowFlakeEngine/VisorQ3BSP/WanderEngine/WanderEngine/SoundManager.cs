@@ -35,17 +35,17 @@ namespace SnowflakeEngine.WanderEngine
 
     public class SoundManager
     {
-        private readonly Hashtable Buffer3DTable = new Hashtable();
-        private readonly Hashtable BufferTable = new Hashtable();
+        private readonly Hashtable _buffer3DTable = new Hashtable();
+        private readonly Hashtable _bufferTable = new Hashtable();
         // miki-sound-off private Device DSoundDevice = null;
-        private readonly Random Generator = new Random();
+        private readonly Random _generator = new Random();
         // miki-sound-off private Listener3D Listener = null;
-        private Control Owner;
+        private Control _owner;
         // miki-sound-off private SoundBuffer Primary = null;
 
-        public SoundManager(Control Owner)
+        public SoundManager(Control owner)
         {
-            this.Owner = Owner;
+            _owner = owner;
             // miki-sound-off this.DSoundDevice = new Device();
             // miki-sound-off this.DSoundDevice.SetCooperativeLevel(Owner, CooperativeLevel.Normal);
             // miki-sound-off BufferDescription desc = new BufferDescription();
@@ -58,25 +58,25 @@ namespace SnowflakeEngine.WanderEngine
         public string GenerateName()
         {
             var key = "";
-            while (BufferTable.ContainsKey(key))
+            while (_bufferTable.ContainsKey(key))
             {
-                var num = Generator.Next(1, 20);
+                var num = _generator.Next(1, 20);
                 for (var i = 0; i < num; i++)
                 {
-                    var ch = Convert.ToChar(Generator.Next(0, 0xff));
+                    var ch = Convert.ToChar(_generator.Next(0, 0xff));
                     key = key + ch;
                 }
             }
             return key;
         }
 
-        public void LoadSound(string Name, string FileName)
+        public void LoadSound(string name, string fileName)
         {
             // miki-sound-off SecondaryBuffer projection = new SecondaryBuffer(FileName, this.DSoundDevice);
             // miki-sound-off this.BufferTable[Name] = projection;
         }
 
-        public void LoadSound3D(string Name, string FileName)
+        public void LoadSound3D(string name, string fileName)
         {
             // miki-sound-off BufferDescription desc = new BufferDescription();
             // miki-sound-off desc.Control3D = true;
@@ -89,9 +89,9 @@ namespace SnowflakeEngine.WanderEngine
             // miki-sound-off this.Buffer3DTable[Name] = bufferd;
         }
 
-        public void PlaySound(string Name)
+        public void PlaySound(string name)
         {
-            if (BufferTable.ContainsKey(Name))
+            if (_bufferTable.ContainsKey(name))
             {
                 // miki-sound-off SecondaryBuffer projection = (SecondaryBuffer) this.BufferTable[Name];
                 // miki-sound-off if (projection.Status.Playing)
@@ -102,16 +102,16 @@ namespace SnowflakeEngine.WanderEngine
             }
         }
 
-        public void SetBufferPosition(string Name, Vector3f Position)
+        public void SetBufferPosition(string name, Vector3F position)
         {
-            if (Buffer3DTable.ContainsKey(Name))
+            if (_buffer3DTable.ContainsKey(name))
             {
                 // miki-sound-off Buffer3D bufferd = (Buffer3D) this.Buffer3DTable[Name];
                 // miki-sound-off bufferd.Position = new Microsoft.DirectX.Vector3(Position.X, Position.Y, Position.Z);
             }
         }
 
-        public void SetListenerPosition(Vector3f Position)
+        public void SetListenerPosition(Vector3F position)
         {
             // miki-sound-off this.Listener.Position = new Microsoft.DirectX.Vector3(Position.X, Position.Y, Position.Z);
         }

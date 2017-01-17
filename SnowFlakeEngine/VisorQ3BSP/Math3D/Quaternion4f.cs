@@ -26,73 +26,73 @@ using System;
 namespace Math3D
 {
     [Serializable]
-    public class Quaternion4f
+    public class Quaternion4F
     {
-        private Vector3f tempVx = new Vector3f();
-        private Vector3f tempVy = new Vector3f();
-        private Vector3f tempVz = new Vector3f();
-        private float w = 1, x, y, z;
+        private Vector3F _tempVx = new Vector3F();
+        private Vector3F _tempVy = new Vector3F();
+        private Vector3F _tempVz = new Vector3F();
+        private float _w = 1, _x, _y, _z;
 
         /// <summary>
         ///     Crea un nuevo Quaternion inicializado a la identidad
         /// </summary>
-        public Quaternion4f()
+        public Quaternion4F()
         {
         }
 
-        public Quaternion4f(Vector3f v, float w)
+        public Quaternion4F(Vector3F v, float w)
         {
-            x = v.X;
-            y = v.X;
-            z = v.X;
-            this.w = w;
+            _x = v.X;
+            _y = v.X;
+            _z = v.X;
+            _w = w;
         }
 
-        public Quaternion4f(float w, float x, float y, float z)
+        public Quaternion4F(float w, float x, float y, float z)
         {
-            this.w = w;
-            this.x = x;
-            this.y = y;
-            this.z = z;
+            _w = w;
+            _x = x;
+            _y = y;
+            _z = z;
         }
 
         public float X
         {
-            get { return x; }
-            set { x = value; }
+            get { return _x; }
+            set { _x = value; }
         }
 
         public float Y
         {
-            get { return y; }
-            set { y = value; }
+            get { return _y; }
+            set { _y = value; }
         }
 
         public float Z
         {
-            get { return z; }
-            set { z = value; }
+            get { return _z; }
+            set { _z = value; }
         }
 
         public float W
         {
-            get { return w; }
-            set { w = value; }
+            get { return _w; }
+            set { _w = value; }
         }
 
-        public Vector3f Xyz
+        public Vector3F Xyz
         {
-            get { return new Vector3f(X, Y, Z); }
+            get { return new Vector3F(X, Y, Z); }
         }
 
         /// <summary>
         ///     Devuelve un nuevo Quaternion igual a la identidad
         /// </summary>
-        public static Quaternion4f Identity
+        public static Quaternion4F Identity
         {
             get
             {
-                return new Quaternion4f(1.0f, 0.0f, 0.0f, 0.0f);
+                return new Quaternion4F(1.0f, 0.0f, 0.0f, 0.0f);
                 ;
             }
         }
@@ -106,7 +106,7 @@ namespace Math3D
         {
             get
             {
-                var v = new Vector3f(X, Y, Z);
+                var v = new Vector3F(X, Y, Z);
                 return W*W + v.LengthSquared;
             }
         }
@@ -121,7 +121,7 @@ namespace Math3D
             W = 1;
         }
 
-        public void Rotation(float radians, Vector3f axis)
+        public void Rotation(float radians, Vector3F axis)
         {
             Rotation(radians, axis.X, axis.Y, axis.Z);
         }
@@ -141,17 +141,17 @@ namespace Math3D
         ///     this = this * q
         /// </summary>
         /// <param name="q"></param>
-        public void Multiply(Quaternion4f q)
+        public void Multiply(Quaternion4F q)
         {
-            var auxX = w*q.x + x*q.w + y*q.z - z*q.y;
-            var auxY = w*q.y + y*q.w + z*q.x - x*q.z;
-            var auxZ = w*q.z + z*q.w + x*q.y - y*q.x;
-            var auxW = w*q.w - x*q.x - y*q.y - z*q.z;
+            var auxX = _w*q._x + _x*q._w + _y*q._z - _z*q._y;
+            var auxY = _w*q._y + _y*q._w + _z*q._x - _x*q._z;
+            var auxZ = _w*q._z + _z*q._w + _x*q._y - _y*q._x;
+            var auxW = _w*q._w - _x*q._x - _y*q._y - _z*q._z;
 
-            x = auxX;
-            y = auxY;
-            z = auxZ;
-            w = auxW;
+            _x = auxX;
+            _y = auxY;
+            _z = auxZ;
+            _w = auxW;
         }
 
         /// <summary>
@@ -160,9 +160,9 @@ namespace Math3D
         /// <param name="tempLeft"></param>
         /// <param name="tempRight"></param>
         /// <returns></returns>
-        public static Quaternion4f operator *(Quaternion4f left, Quaternion4f right)
+        public static Quaternion4F operator *(Quaternion4F left, Quaternion4F right)
         {
-            var q = new Quaternion4f();
+            var q = new Quaternion4F();
 
             q.X = left.W*right.X + left.X*right.W + left.Y*right.Z - left.Z*right.Y;
             q.Y = left.W*right.Y + left.Y*right.W + left.Z*right.X - left.X*right.Z;
@@ -172,76 +172,76 @@ namespace Math3D
             return q;
         }
 
-        public static Quaternion4f FromDegreesAxis(float degrees, float x, float y, float z)
+        public static Quaternion4F FromDegreesAxis(float degrees, float x, float y, float z)
         {
             return FromRadiansAxis(MathHelp.RadiansFromDegrees(degrees), x, y, z);
         }
 
-        public static Quaternion4f FromDegreesAxis(float degrees, Vector3f axis)
+        public static Quaternion4F FromDegreesAxis(float degrees, Vector3F axis)
         {
             return FromRadiansAxis(MathHelp.RadiansFromDegrees(degrees), axis.X, axis.Y, axis.Z);
         }
 
-        public static Quaternion4f FromRadiansAxis(float radianes, Vector3f axis)
+        public static Quaternion4F FromRadiansAxis(float radianes, Vector3F axis)
         {
             return FromRadiansAxis(radianes, axis.X, axis.Y, axis.Z);
         }
 
-        public static Quaternion4f FromRadiansAxis(float radianes, float x, float y, float z)
+        public static Quaternion4F FromRadiansAxis(float radianes, float x, float y, float z)
         {
-            var quaternion = new Quaternion4f();
+            var quaternion = new Quaternion4F();
             var num2 = radianes*0.5f;
             var num = (float) Math.Sin(num2);
             var num3 = (float) Math.Cos(num2);
-            quaternion.x = x*num;
-            quaternion.y = y*num;
-            quaternion.z = z*num;
-            quaternion.w = num3;
+            quaternion._x = x*num;
+            quaternion._y = y*num;
+            quaternion._z = z*num;
+            quaternion._w = num3;
             quaternion.Normalize();
             return quaternion;
         }
 
-        public void FromMatrix(Matrix4f m)
+        public void FromMatrix(Matrix4F m)
         {
-            m.GetRight(ref tempVx);
-            m.GetUp(ref tempVy);
-            m.GetForward(ref tempVz);
+            m.GetRight(ref _tempVx);
+            m.GetUp(ref _tempVy);
+            m.GetForward(ref _tempVz);
 
-            var trace = tempVx.X + tempVy.Y + tempVz.Z + 1.0f;
+            var trace = _tempVx.X + _tempVy.Y + _tempVz.Z + 1.0f;
 
             if (trace > 0.0001f)
             {
                 var s = (float) (0.5/Math.Sqrt(trace));
-                w = 0.25f/s;
-                x = (tempVy.Z - tempVz.Y)*s;
-                y = (tempVz.X - tempVx.Z)*s;
-                z = (tempVx.Y - tempVy.X)*s;
+                _w = 0.25f/s;
+                _x = (_tempVy.Z - _tempVz.Y)*s;
+                _y = (_tempVz.X - _tempVx.Z)*s;
+                _z = (_tempVx.Y - _tempVy.X)*s;
             }
             else
             {
-                if ((tempVx.X > tempVy.Y) && (tempVx.X > tempVz.Z))
+                if ((_tempVx.X > _tempVy.Y) && (_tempVx.X > _tempVz.Z))
                 {
-                    var s = (float) (0.5/Math.Sqrt(1.0f + tempVx.X - tempVy.Y - tempVz.Z));
-                    x = 0.25f/s;
-                    y = (tempVy.X + tempVx.Y)*s;
-                    z = (tempVz.X + tempVx.Z)*s;
-                    w = (tempVz.Y - tempVy.Z)*s;
+                    var s = (float) (0.5/Math.Sqrt(1.0f + _tempVx.X - _tempVy.Y - _tempVz.Z));
+                    _x = 0.25f/s;
+                    _y = (_tempVy.X + _tempVx.Y)*s;
+                    _z = (_tempVz.X + _tempVx.Z)*s;
+                    _w = (_tempVz.Y - _tempVy.Z)*s;
                 }
-                else if (tempVy.Y > tempVz.Z)
+                else if (_tempVy.Y > _tempVz.Z)
                 {
-                    var s = (float) (0.5/Math.Sqrt(1.0f + tempVy.Y - tempVx.X - tempVz.Z));
-                    x = (tempVy.X + tempVx.Y)*s;
-                    y = 0.25f/s;
-                    z = (tempVz.Y + tempVy.Z)*s;
-                    w = (tempVz.X - tempVx.Z)*s;
+                    var s = (float) (0.5/Math.Sqrt(1.0f + _tempVy.Y - _tempVx.X - _tempVz.Z));
+                    _x = (_tempVy.X + _tempVx.Y)*s;
+                    _y = 0.25f/s;
+                    _z = (_tempVz.Y + _tempVy.Z)*s;
+                    _w = (_tempVz.X - _tempVx.Z)*s;
                 }
                 else
                 {
-                    var s = (float) (0.5/Math.Sqrt(1.0f + tempVz.Z - tempVx.X - tempVy.Y));
-                    x = (tempVz.X + tempVx.Z)*s;
-                    y = (tempVz.Y + tempVy.Z)*s;
-                    z = 0.25f/s;
-                    w = (tempVy.X - tempVx.Y)*s;
+                    var s = (float) (0.5/Math.Sqrt(1.0f + _tempVz.Z - _tempVx.X - _tempVy.Y));
+                    _x = (_tempVz.X + _tempVx.Z)*s;
+                    _y = (_tempVz.Y + _tempVy.Z)*s;
+                    _z = 0.25f/s;
+                    _w = (_tempVy.X - _tempVx.Y)*s;
                 }
             }
         }
@@ -249,7 +249,7 @@ namespace Math3D
         public void Normalize()
         {
             // Compute magnitude of the quaternion
-            var mag = (float) Math.Sqrt((w*w) + (x*x) + (y*y) + (z*z));
+            var mag = (float) Math.Sqrt((_w*_w) + (_x*_x) + (_y*_y) + (_z*_z));
 
             // Check for bogus length, to protect against divide by zero
             if (mag > 0.0)
@@ -257,24 +257,24 @@ namespace Math3D
                 // Normalize it
                 var oneOverMag = 1.0f/mag;
 
-                w *= oneOverMag;
-                x *= oneOverMag;
-                y *= oneOverMag;
-                z *= oneOverMag;
+                _w *= oneOverMag;
+                _x *= oneOverMag;
+                _y *= oneOverMag;
+                _z *= oneOverMag;
             }
         }
 
-        public float Dot(Quaternion4f quat)
+        public float Dot(Quaternion4F quat)
         {
-            return w*quat.w + x*quat.x + y*quat.y + z*quat.z;
+            return _w*quat._w + _x*quat._x + _y*quat._y + _z*quat._z;
         }
 
-        public static float Dot(Quaternion4f a, Quaternion4f b)
+        public static float Dot(Quaternion4F a, Quaternion4F b)
         {
-            return ((a.w*b.w) + (a.x*b.x) + (a.y*b.y) + (a.z*b.z));
+            return ((a._w*b._w) + (a._x*b._x) + (a._y*b._y) + (a._z*b._z));
         }
 
-        public void CopyFrom(Quaternion4f q)
+        public void CopyFrom(Quaternion4F q)
         {
             W = q.W;
             X = q.X;
@@ -291,7 +291,7 @@ namespace Math3D
         /// <param name="q2">The second quaternion</param>
         /// <param name="blend">The blend factor</param>
         /// <returns>A smooth blend between the given quaternions</returns>
-        public static Quaternion4f OtkSlerp(Quaternion4f q1, Quaternion4f q2, float blend)
+        public static Quaternion4F OtkSlerp(Quaternion4F q1, Quaternion4F q2, float blend)
         {
             // if either input is zero, return the other.
             if (q1.LengthSquared == 0.0f)
@@ -340,7 +340,7 @@ namespace Math3D
                 blendB = blend;
             }
 
-            var result = new Quaternion4f(blendA*q1.Xyz + blendB*q2.Xyz, blendA*q1.W + blendB*q2.W);
+            var result = new Quaternion4F(blendA*q1.Xyz + blendB*q2.Xyz, blendA*q1.W + blendB*q2.W);
             if (result.LengthSquared > 0.0f)
             {
                 result.Normalize();
@@ -351,9 +351,9 @@ namespace Math3D
 
         #endregion
 
-        public static Quaternion4f Slerp(Quaternion4f q0, Quaternion4f q1, float t)
+        public static Quaternion4F Slerp(Quaternion4F q0, Quaternion4F q1, float t)
         {
-            var qresult = new Quaternion4f();
+            var qresult = new Quaternion4F();
 
             // Check for out-of range parameter and return edge points if so
             if (t <= 0.0)
@@ -374,17 +374,17 @@ namespace Math3D
             // represent the same rotation, but may produce
             // different slerp.  We chose q or -q to rotate using
             // the acute angle.
-            var q1w = q1.w;
-            var q1x = q1.x;
-            var q1y = q1.y;
-            var q1z = q1.z;
+            var q1W = q1._w;
+            var q1X = q1._x;
+            var q1Y = q1._y;
+            var q1Z = q1._z;
 
             if (cosOmega < 0.0)
             {
-                q1w = -q1w;
-                q1x = -q1x;
-                q1y = -q1y;
-                q1z = -q1z;
+                q1W = -q1W;
+                q1X = -q1X;
+                q1Y = -q1Y;
+                q1Z = -q1Z;
                 cosOmega = -cosOmega;
             }
 
@@ -423,11 +423,11 @@ namespace Math3D
             }
 
             // Interpolate and return new quaternion
-            return new Quaternion4f(
-                (k0*q0.w) + (k1*q1w),
-                (k0*q0.x) + (k1*q1x),
-                (k0*q0.y) + (k1*q1y),
-                (k0*q0.z) + (k1*q1z)
+            return new Quaternion4F(
+                (k0*q0._w) + (k1*q1W),
+                (k0*q0._x) + (k1*q1X),
+                (k0*q0._y) + (k1*q1Y),
+                (k0*q0._z) + (k1*q1Z)
                 );
         }
     }

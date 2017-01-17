@@ -15,17 +15,17 @@
     /// </summary>
     public static class SplashScreen
     {
-        private static SplashForm sf;
+        private static SplashForm _sf;
 
         /// <summary>
         ///     Displays the splashscreen
         /// </summary>
         public static void ShowSplashScreen()
         {
-            if (sf == null)
+            if (_sf == null)
             {
-                sf = new SplashForm();
-                sf.ShowSplashScreen();
+                _sf = new SplashForm();
+                _sf.ShowSplashScreen();
             }
         }
 
@@ -34,38 +34,38 @@
         /// </summary>
         public static void CloseSplashScreen()
         {
-            if (sf != null)
+            if (_sf != null)
             {
-                sf.CloseSplashScreen();
-                sf = null;
+                _sf.CloseSplashScreen();
+                _sf = null;
             }
         }
 
         /// <summary>
         ///     Update text in default green color of success message
         /// </summary>
-        /// <param name="Text">Message</param>
-        public static void UdpateStatusText(string Text)
+        /// <param name="text">Message</param>
+        public static void UdpateStatusText(string text)
         {
-            if (sf != null)
-                sf.UdpateStatusText(Text);
+            if (_sf != null)
+                _sf.UdpateStatusText(text);
         }
 
         public static void UpdatePercentage(int percentage)
         {
-            if(sf != null)
-                sf.UpdateProgress(percentage);
+            if (_sf != null)
+                _sf.UpdateProgress(percentage);
         }
 
         /// <summary>
         ///     Update text with message color defined as green/yellow/red/ for success/warning/failure
         /// </summary>
-        /// <param name="Text">Message</param>
+        /// <param name="text">Message</param>
         /// <param name="tom">Type of Message</param>
-        public static void UdpateStatusTextWithStatus(string Text, TypeOfMessage tom)
+        public static void UdpateStatusTextWithStatus(string text, TypeOfMessage tom)
         {
-            if (sf != null)
-                sf.UdpateStatusTextWithStatus(Text, tom);
+            if (_sf != null)
+                _sf.UdpateStatusTextWithStatus(text, tom);
         }
     }
 }

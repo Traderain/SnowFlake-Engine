@@ -91,7 +91,7 @@ namespace Math3D
         /// <summary>
         ///     Direction the plane is facing.
         /// </summary>
-        public Vector3f Normal;
+        public Vector3F Normal;
 
         /// <summary>
         ///     Distance from the origin.
@@ -104,7 +104,7 @@ namespace Math3D
 
         public Plane(Plane plane)
         {
-            Normal = new Vector3f();
+            Normal = new Vector3F();
             Normal.CopyFrom(plane.Normal);
             D = plane.D;
         }
@@ -114,13 +114,13 @@ namespace Math3D
         /// </summary>
         /// <param name="normal"></param>
         /// <param name="constant"></param>
-        public Plane(Vector3f normal, float constant)
+        public Plane(Vector3F normal, float constant)
         {
             Normal = normal;
             D = -constant;
         }
 
-        public Plane(Vector3f normal, Vector3f point)
+        public Plane(Vector3F normal, Vector3F point)
         {
             Normal = normal;
             D = -normal.Dot(point);
@@ -132,12 +132,12 @@ namespace Math3D
         /// <param name="point0">First point.</param>
         /// <param name="point1">Second point.</param>
         /// <param name="point2">Third point.</param>
-        public Plane(Vector3f point0, Vector3f point1, Vector3f point2)
+        public Plane(Vector3F point0, Vector3F point1, Vector3F point2)
         {
-            Normal = new Vector3f();
+            Normal = new Vector3F();
             var edge1 = point1 - point0;
             var edge2 = point2 - point0;
-            Vector3f.Cross(edge1, edge2, ref Normal);
+            Vector3F.Cross(edge1, edge2, ref Normal);
             Normal.Normalize();
             D = -Normal.Dot(point0);
         }
@@ -169,7 +169,7 @@ namespace Math3D
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public PlaneSide GetSide(Vector3f point)
+        public PlaneSide GetSide(Vector3F point)
         {
             var distance = GetDistance(point);
 
@@ -192,7 +192,7 @@ namespace Math3D
         /// </summary>
         /// <param name="point"></param>
         /// <returns></returns>
-        public float GetDistance(Vector3f point)
+        public float GetDistance(Vector3F point)
         {
             return Normal.Dot(point) + D;
         }
@@ -203,11 +203,11 @@ namespace Math3D
         /// <param name="point0">First point.</param>
         /// <param name="point1">Second point.</param>
         /// <param name="point2">Third point.</param>
-        public void Redefine(Vector3f point0, Vector3f point1, Vector3f point2)
+        public void Redefine(Vector3F point0, Vector3F point1, Vector3F point2)
         {
             var edge1 = point1 - point0;
             var edge2 = point2 - point0;
-            Vector3f.Cross(edge1, edge2, ref Normal);
+            Vector3F.Cross(edge1, edge2, ref Normal);
             Normal.Normalize();
             D = -Normal.Dot(point0);
         }

@@ -30,9 +30,9 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class LaserBeamInfo
     {
-        public Vector3f End = new Vector3f();
-        public Vector3f Start = new Vector3f();
-        public Vector3f Start2 = new Vector3f();
+        public Vector3F End = new Vector3F();
+        public Vector3F Start = new Vector3F();
+        public Vector3F Start2 = new Vector3F();
         public float TimeRemaining = 0f;
     }
 }

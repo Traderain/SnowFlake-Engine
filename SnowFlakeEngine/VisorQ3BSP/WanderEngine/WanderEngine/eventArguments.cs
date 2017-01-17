@@ -32,45 +32,45 @@ namespace SnowflakeEngine.WanderEngine
     {
         public string ChatMessage = "";
         public bool IsPrivate;
-        public int SenderID = -1;
+        public int SenderId = -1;
 
-        public ChatMessageEventArgs(int SenderID, string ChatMessage, bool IsPrivate)
+        public ChatMessageEventArgs(int senderId, string chatMessage, bool isPrivate)
         {
-            this.SenderID = SenderID;
-            this.ChatMessage = ChatMessage;
-            this.IsPrivate = IsPrivate;
+            SenderId = senderId;
+            ChatMessage = chatMessage;
+            IsPrivate = isPrivate;
         }
     }
 
     public class GameOverEventArgs : EventArgs
     {
-        public int ID = -1;
+        public int Id = -1;
         public string Name = "";
         public int Score = -1;
 
-        public GameOverEventArgs(int ID, string Name, int Score)
+        public GameOverEventArgs(int id, string name, int score)
         {
-            this.ID = ID;
-            this.Name = Name;
-            this.Score = Score;
+            Id = id;
+            Name = name;
+            Score = score;
         }
     }
 
     public class PlayerEventArgs : EventArgs
     {
-        public int ID = -1;
+        public int Id = -1;
         public NetworkPlayerState InitialState;
         public bool IsMarked;
         public string ModelName = "";
         public string Name = "";
 
-        public PlayerEventArgs(int ID, string Name, string ModelName, NetworkPlayerState InitialState, bool IsMarked)
+        public PlayerEventArgs(int id, string name, string modelName, NetworkPlayerState initialState, bool isMarked)
         {
-            this.ID = ID;
-            this.Name = Name;
-            this.ModelName = ModelName;
-            this.InitialState = InitialState;
-            this.IsMarked = IsMarked;
+            Id = id;
+            Name = name;
+            ModelName = modelName;
+            InitialState = initialState;
+            IsMarked = isMarked;
         }
     }
 
@@ -78,9 +78,9 @@ namespace SnowflakeEngine.WanderEngine
     {
         public string Name = "";
 
-        public TriggerEventArgs(string Name)
+        public TriggerEventArgs(string name)
         {
-            this.Name = Name;
+            Name = name;
         }
     }
 }

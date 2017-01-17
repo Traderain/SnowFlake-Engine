@@ -26,44 +26,44 @@ using System;
 namespace Math3D
 {
     [Serializable]
-    public class Vector4f
+    public class Vector4F
     {
-        public float[] values = new float[4];
+        public float[] Values = new float[4];
 
-        public Vector4f()
+        public Vector4F()
         {
         }
 
-        public Vector4f(float x, float y, float z, float w)
+        public Vector4F(float x, float y, float z, float w)
         {
-            values[0] = x;
-            values[1] = y;
-            values[2] = z;
-            values[3] = w;
+            Values[0] = x;
+            Values[1] = y;
+            Values[2] = z;
+            Values[3] = w;
         }
 
         public float X
         {
-            get { return values[0]; }
-            set { values[0] = value; }
+            get { return Values[0]; }
+            set { Values[0] = value; }
         }
 
         public float Y
         {
-            get { return values[1]; }
-            set { values[1] = value; }
+            get { return Values[1]; }
+            set { Values[1] = value; }
         }
 
         public float Z
         {
-            get { return values[2]; }
-            set { values[2] = value; }
+            get { return Values[2]; }
+            set { Values[2] = value; }
         }
 
         public float W
         {
-            get { return values[3]; }
-            set { values[3] = value; }
+            get { return Values[3]; }
+            set { Values[3] = value; }
         }
     }
 }

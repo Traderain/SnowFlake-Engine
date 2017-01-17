@@ -32,23 +32,23 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class Font3D : IDisposable
     {
-        private readonly int Base;
-        private readonly Texture FontTexture;
-        private float ScreenHeight;
-        private float ScreenWidth;
+        private readonly int _base;
+        private readonly Texture _fontTexture;
+        private float _screenHeight;
+        private float _screenWidth;
         //public Font3D(SimpleOpenGlControl GlControl, string FontImage)
-        public Font3D(int width, int height, string FontImage)
+        public Font3D(int width, int height, string fontImage)
         {
-            FontTexture = new Texture(FontImage);
-            Base = GL.GenLists(0x100);
-            ScreenWidth = width;
-            ScreenHeight = height;
+            _fontTexture = new Texture(fontImage);
+            _base = GL.GenLists(0x100);
+            _screenWidth = width;
+            _screenHeight = height;
             var s = 0f;
             var t = 1f;
-            GL.BindTexture(TextureTarget.Texture2D, FontTexture.TextureID);
+            GL.BindTexture(TextureTarget.Texture2D, _fontTexture.TextureId);
             for (var i = 0; i < 0x100; i++)
             {
-                GL.NewList(Base + i, ListMode.Compile);
+                GL.NewList(_base + i, ListMode.Compile);
                 GL.Begin(BeginMode.Quads);
                 GL.TexCoord2(s, t - 0.0625f);
                 GL.Vertex2(0.0, 0.0);
@@ -72,13 +72,13 @@ namespace SnowflakeEngine.WanderEngine
 
         public void Dispose()
         {
-            GL.DeleteLists(Base, 0x100);
+            GL.DeleteLists(_base, 0x100);
         }
 
-        public void Render(float X, float Y, float Z, string Text)
+        public void Render(float x, float y, float z, string text)
         {
             GL.PushMatrix();
-            GL.Translate(X, Y, Z);
+            GL.Translate(x, y, z);
             var buffer = new float[0x10];
             /*float[] matrix = new float[0x10];
             GL.GetFloat(GetPName.ModelviewMatrix, buffer);
@@ -99,16 +99,16 @@ namespace SnowflakeEngine.WanderEngine
             matrix[14] = 0f;
             matrix[15] = 1f;
             GL.MultMatrix(matrix);*/
-            GL.BindTexture(TextureTarget.Texture2D, FontTexture.TextureID);
+            GL.BindTexture(TextureTarget.Texture2D, _fontTexture.TextureId);
             GL.Color4(1f, 1f, 1f, 1f);
             GL.Enable(EnableCap.Blend);
             GL.Enable(EnableCap.Texture2D);
             GL.Disable(EnableCap.DepthTest);
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
             GL.Disable(EnableCap.CullFace);
-            GL.Translate(Text.Length*-4f, 0f, Text.Length*-4f);
-            GL.ListBase((Base - 0x20) + 0x80);
-            GL.CallLists(Text.Length, ListNameType.UnsignedByte, Encoding.ASCII.GetBytes(Text));
+            GL.Translate(text.Length*-4f, 0f, text.Length*-4f);
+            GL.ListBase((_base - 0x20) + 0x80);
+            GL.CallLists(text.Length, ListNameType.UnsignedByte, Encoding.ASCII.GetBytes(text));
             GL.Enable(EnableCap.CullFace);
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.Blend);

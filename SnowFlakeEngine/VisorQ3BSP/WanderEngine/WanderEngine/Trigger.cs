@@ -37,12 +37,12 @@ namespace SnowflakeEngine.WanderEngine
             Name = "";
         }
 
-        public Trigger(string Name, int ModelIndex)
+        public Trigger(string name, int modelIndex)
         {
-            this.ModelIndex = -1;
-            this.Name = "";
-            this.Name = Name;
-            this.ModelIndex = ModelIndex;
+            ModelIndex = -1;
+            Name = "";
+            Name = name;
+            ModelIndex = modelIndex;
         }
     }
 }

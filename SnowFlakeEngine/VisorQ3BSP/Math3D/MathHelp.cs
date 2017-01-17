@@ -27,24 +27,24 @@ namespace Math3D
 {
     public sealed class MathHelp
     {
-        public const float PI = 3.1415926535f;
-        private static float[] seno;
-        private static float[] coseno;
-        private static bool trig;
-        private static readonly float rad2scale = 4096f/3.14159265f/2f;
-        private static readonly float pad = 256*3.14159265f;
-        private static readonly float deg2rad = (float) (Math.PI/180); // 0.0175f
-        private static readonly float rad2deg = (float) (180/Math.PI); // 57.2958f
-        private static int[] fastRandoms;
-        private static int fastRndPointer;
-        private static bool fastRndInit;
-        private static readonly Random rnd = new Random();
-        private static readonly Vector3f tempLeft = new Vector3f();
-        private static readonly Vector3f tempRight = new Vector3f();
+        public const float Pi = 3.1415926535f;
+        private static float[] _seno;
+        private static float[] _coseno;
+        private static bool _trig;
+        private static readonly float Rad2Scale = 4096f/3.14159265f/2f;
+        private static readonly float Pad = 256*3.14159265f;
+        private static readonly float Deg2Rad = (float) (Math.PI/180); // 0.0175f
+        private static readonly float Rad2Deg = (float) (180/Math.PI); // 57.2958f
+        private static int[] _fastRandoms;
+        private static int _fastRndPointer;
+        private static bool _fastRndInit;
+        private static readonly Random Rnd = new Random();
+        private static readonly Vector3F TempLeft = new Vector3F();
+        private static readonly Vector3F TempRight = new Vector3F();
 
         public static float Interpola(float pA, float pB, float pD)
         {
-            var f = (1 - Coseno(pD*PI))*0.5f;
+            var f = (1 - Coseno(pD*Pi))*0.5f;
             return pA + f*(pB - pA);
         }
 
@@ -57,7 +57,7 @@ namespace Math3D
         public static float Aleatorio(float pMinimo, float pMaximo)
         {
             //Random rnd = new Random();
-            return (float) (rnd.NextDouble()*(pMaximo - pMinimo) + pMinimo);
+            return (float) (Rnd.NextDouble()*(pMaximo - pMinimo) + pMinimo);
         }
 
         public static float AleatorioConDelta(float pAveridge, float pDelta)
@@ -71,17 +71,17 @@ namespace Math3D
             {
                 return 0;
             }
-            fastRndPointer = (fastRndPointer + 1) & 31;
-            if (!fastRndInit)
+            _fastRndPointer = (_fastRndPointer + 1) & 31;
+            if (!_fastRndInit)
             {
-                fastRandoms = new int[32];
+                _fastRandoms = new int[32];
                 for (var i = 0; i < 32; i++)
                 {
-                    fastRandoms[i] = (int) Aleatorio(0, 0xFFFFFF);
+                    _fastRandoms[i] = (int) Aleatorio(0, 0xFFFFFF);
                 }
-                fastRndInit = true;
+                _fastRndInit = true;
             }
-            return fastRandoms[fastRndPointer] & (1 << (pBits - 1));
+            return _fastRandoms[_fastRndPointer] & (1 << (pBits - 1));
         }
 
         public static int FastRndBit()
@@ -91,40 +91,40 @@ namespace Math3D
 
         public static float RadiansFromDegrees(float pDegrees)
         {
-            return pDegrees*deg2rad;
+            return pDegrees*Deg2Rad;
         }
 
         public static float DegreesFromRadians(float pRadianes)
         {
-            return pRadianes*rad2deg;
+            return pRadianes*Rad2Deg;
         }
 
         public static float Seno(float pAngulo)
         {
-            if (!trig) BuildTrig();
-            return seno[(int) ((pAngulo + pad)*rad2scale) & 0xFFF];
+            if (!_trig) BuildTrig();
+            return _seno[(int) ((pAngulo + Pad)*Rad2Scale) & 0xFFF];
         }
 
         public static float Coseno(float pAngulo)
         {
-            if (!trig) BuildTrig();
-            return coseno[(int) ((pAngulo + pad)*rad2scale) & 0xFFF];
+            if (!_trig) BuildTrig();
+            return _coseno[(int) ((pAngulo + Pad)*Rad2Scale) & 0xFFF];
         }
 
         private static void BuildTrig()
         {
             Console.WriteLine(">> Building warp_Math LUT");
 
-            seno = new float[4096];
-            coseno = new float[4096];
+            _seno = new float[4096];
+            _coseno = new float[4096];
 
             for (var i = 0; i < 4096; i++)
             {
-                seno[i] = (float) Math.Sin(i/rad2scale);
-                coseno[i] = (float) Math.Cos(i/rad2scale);
+                _seno[i] = (float) Math.Sin(i/Rad2Scale);
+                _coseno[i] = (float) Math.Cos(i/Rad2Scale);
             }
 
-            trig = true;
+            _trig = true;
         }
 
         public static float Pythagoras(float pA, float pB)
@@ -174,25 +174,25 @@ namespace Math3D
         /// <param name="v2"></param>
         /// <param name="v3"></param>
         /// <returns></returns>
-        public static Vector3f CalculateBasicFaceNormal(Vector3f v1, Vector3f v2, Vector3f v3)
+        public static Vector3F CalculateBasicFaceNormal(Vector3F v1, Vector3F v2, Vector3F v3)
         {
-            var normal = new Vector3f();
+            var normal = new Vector3F();
             var left = v2 - v1;
             var right = v3 - v1;
 
-            Vector3f.Cross(left, right, ref normal);
+            Vector3F.Cross(left, right, ref normal);
             normal.Normalize();
 
             return normal;
         }
 
-        public static void CalculateBasicFaceNormal(Vector3f v1, Vector3f v2, Vector3f v3, ref Vector3f result)
+        public static void CalculateBasicFaceNormal(Vector3F v1, Vector3F v2, Vector3F v3, ref Vector3F result)
         {
-            tempLeft.CopyFrom(v2);
-            tempRight.CopyFrom(v3);
-            tempLeft.Subtract(v1);
-            tempRight.Subtract(v1);
-            Vector3f.Cross(tempLeft, tempRight, ref result);
+            TempLeft.CopyFrom(v2);
+            TempRight.CopyFrom(v3);
+            TempLeft.Subtract(v1);
+            TempRight.Subtract(v1);
+            Vector3F.Cross(TempLeft, TempRight, ref result);
             result.Normalize();
         }
 

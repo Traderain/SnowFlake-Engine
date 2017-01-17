@@ -33,16 +33,16 @@ namespace SnowflakeEngine.WanderEngine
         public bool Active = true;
         public float Alpha = 1f;
         public bool AlphaDir = true;
-        public int ID = -1;
-        public ItemType IType = ItemType.Health;
-        public Vector3f Position = new Vector3f();
+        public int Id = -1;
+        public Vector3F Position = new Vector3F();
+        public ItemType Type = ItemType.Health;
         //public Glu.GLUquadric Quad;
 
         //public Item(Vector3f Position, ItemType IType, Glu.GLUquadric Quad)
-        public Item(Vector3f Position, ItemType IType)
+        public Item(Vector3F position, ItemType type)
         {
-            this.Position = Position;
-            this.IType = IType;
+            Position = position;
+            Type = type;
             //this.Quad = Quad;
         }
     }

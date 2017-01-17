@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
@@ -16,23 +17,23 @@ namespace SnowflakeEngine.WanderEngine
 	{
 		public enum msgtype
 		{
-			engine,
-			game,
-			error
+			Engine,
+			Game,
+			Error
 		}
 
-		public static void Log(string msg, msgtype type = msgtype.engine)
+		public static void Log(string msg, msgtype type = msgtype.Engine)
 		{
 #if DEBUG
 			switch (type)
 			{
-				case msgtype.engine:
+				case msgtype.Engine:
 					Console.ForegroundColor = ConsoleColor.DarkGreen;
 					break;
-				case msgtype.game:
+				case msgtype.Game:
 					Console.ForegroundColor = ConsoleColor.White;
 					break;
-				case msgtype.error:
+				case msgtype.Error:
 					Console.ForegroundColor = ConsoleColor.Red;
 					break;
 			}
@@ -40,6 +41,7 @@ namespace SnowflakeEngine.WanderEngine
 #endif
 		}
 	}
+
 	// miki-play-off using VoiceClient = Microsoft.DirectX.DirectPlay.Voice.Client;
 	// miki-play-off using PlayClient = Microsoft.DirectX.DirectPlay.Client;
 	// miki-input-off using InputDevice = Microsoft.DirectX.DirectInput.Device;
@@ -61,78 +63,78 @@ namespace SnowflakeEngine.WanderEngine
 		public delegate void TriggerActivatedHandler(object sender, TriggerEventArgs e);
 
 		// miki-sound-off private SoundManager EngineSoundManager = null;
-		public static readonly int EveryoneID = 0;
-		internal static int texUnits = 1;
+		public static readonly int EveryoneId = 0;
+		internal static int TexUnits = 1;
 		// miki-play-off private VoiceClient ClientVoice = null;
-		private readonly ControlConfig ControlCfg = new ControlConfig();
-		private readonly double farClipDistance = 5000.0f;
-		private readonly double fieldOfView = 45.0f;
+		private readonly ControlConfig _controlCfg = new ControlConfig();
+		private readonly double _farClipDistance = 5000.0f;
+		private readonly double _fieldOfView = 45.0f;
 		// miki private bool FireEnabled = true;
-		private readonly ForceCollection Forces = new ForceCollection();
-		private readonly GameWindow gameWin;
-		private readonly Random Generator = new Random();
-		private readonly ArrayList IncomingPlayers = new ArrayList();
-		private readonly Hashtable Items = new Hashtable();
-		private readonly ArrayList LaserBeams = new ArrayList();
+		private readonly ForceCollection _forces = new ForceCollection();
+		private readonly GameWindow _gameWin;
+		private readonly Random _generator = new Random();
+		private readonly ArrayList _incomingPlayers = new ArrayList();
+		private readonly Hashtable _items = new Hashtable();
+		private readonly ArrayList _laserBeams = new ArrayList();
 
-		private readonly NetworkPlayerState LastState = new NetworkPlayerState(float.NaN, float.NaN, float.NaN,
+		private readonly NetworkPlayerState _lastState = new NetworkPlayerState(float.NaN, float.NaN, float.NaN,
 			float.NaN);
 
-		private readonly bool m_ProcessInput = true;
-		private readonly Camera MapCamera = new Camera();
-		private readonly Frustrum MapFrustrum = new Frustrum();
-		private readonly double nearClipDistance = 1.0f;
-		private readonly Hashtable NetworkPlayers = new Hashtable();
-		private readonly bool NextStateReady = true;
-		private readonly ArrayList OutgoingPlayerIDs = new ArrayList();
-		private readonly ArrayList SpawnPoints = new ArrayList();
-		private readonly bool VoiceEnabled = false;
-		private bool acquireMouse = true;
-		public int Ammo = 10;
-		private double aspectRatio = 1.0f;
+		private readonly Camera _mapCamera = new Camera();
+		private readonly Frustrum _mapFrustrum = new Frustrum();
+		private readonly bool _mProcessInput = true;
+		private readonly double _nearClipDistance = 1.0f;
+		private readonly Hashtable _networkPlayers = new Hashtable();
+		private readonly bool _nextStateReady = true;
+		private readonly ArrayList _outgoingPlayerIDs = new ArrayList();
+		private readonly ArrayList _spawnPoints = new ArrayList();
+		private readonly bool _voiceEnabled = false;
+		private bool _acquireMouse = true;
+		private double _aspectRatio = 1.0f;
 		//private static readonly Guid ApplicationGuid = new Guid("{DCC56EE8-0265-4e9b-91E8-A1210B12E0AC}");
-		private int BlastForce = -1;
-		private BSPFile CurrentMap;
-		private bool CursorHide;
-		private float DeathTime;
+		private int _blastForce = -1;
+		private BspFile _currentMap;
+		private bool _cursorHide;
+		private float _deathTime;
+		private int _gravityForce = -1;
+		private float _hurtTime;
+		private int _jumpForce = -1;
+		// miki-input-off private InputDevice KeyboardDevice = null;
+		private Texture _knifeTexture;
+		private float _laserTime;
+		private CommandSet _playerState = new CommandSet();
+		private Point _pointerCurrent, _pointerPrevious;
+		private Size _pointerDelta;
+		private int _runForce = -1;
+		private float _stabTime;
+		private int _strafeForce = -1;
+		// miki-input-off private InputDevice MouseDevice = null;
+		private Text2D _textFont;
+		private float _timeElapsed;
+		private int _winWidth, _winHeight;
+		public int Ammo = 10;
 		// miki-play-off private PlayClient DPClient = null;
 		public bool EnableJump = true;
-		private int GravityForce = -1;
 		public bool HasMarkedItem = false;
 		public int Health = 100;
-		private float HurtTime;
-		private int JumpForce = -1;
-		// miki-input-off private InputDevice KeyboardDevice = null;
-		private Texture KnifeTexture;
-		private float LaserTime;
 		public bool Marked;
-		private CommandSet PlayerState = new CommandSet();
-		private Point pointer_current, pointer_previous;
-		private Size pointer_delta;
 		// miki private static readonly int Port = 0x3104;
 		//private Form RenderForm = null;
 		//private SimpleOpenGlControl RenderTarget = null;
 		public string RoundInfo = "";
-		private int RunForce = -1;
 		public int Score;
 		public int SecondsLeft = 0;
-		private float StabTime;
-		private int StrafeForce = -1;
-		// miki-input-off private InputDevice MouseDevice = null;
-		private Text2D textFont;
-		private float TimeElapsed;
 		//private float WalkBias = 0f;
 		public WeaponType Weapon = WeaponType.Knife;
-		private int winWidth = 1, winHeight = 1;
 
 		public Engine(GameWindow gameWin)
 		{
 			if (gameWin == null)
-				throw new ArgumentNullException("Not proper arguments supplied.");
+				throw new ArgumentNullException(nameof(gameWin));
 
-			this.gameWin = gameWin;
-			winHeight = gameWin.Height;
-			winWidth = gameWin.Width;
+			_gameWin = gameWin;
+			_winHeight = gameWin.Height;
+			_winWidth = gameWin.Width;
 
 			gameWin.Mouse.ButtonDown += gameWin_Mouse_ButtonDown;
 
@@ -140,14 +142,11 @@ namespace SnowflakeEngine.WanderEngine
 		}
 
 		public static string Quake3FilesPath { get; set; }
-
 		public bool Connected { get; private set; }
-
-		public bool IsDead => (DeathTime > 0f);
-
+		public bool IsDead => (_deathTime > 0f);
 		public bool IsPaused { get; set; } = false;
 		public string ModelName { get; set; } = "";
-		public int NetworkID { get; } = -1;
+		public int NetworkId { get; } = -1;
 		public string PlayerName { get; set; } = "";
 
 		private float WeaponTime
@@ -157,9 +156,9 @@ namespace SnowflakeEngine.WanderEngine
 				switch (Weapon)
 				{
 					case WeaponType.Knife:
-						return StabTime;
+						return _stabTime;
 					case WeaponType.Laser:
-						return LaserTime;
+						return _laserTime;
 				}
 				return 0f;
 			}
@@ -183,7 +182,7 @@ namespace SnowflakeEngine.WanderEngine
 		private void gameWin_Mouse_ButtonDown(object sender, MouseButtonEventArgs e)
 		{
 			if (e.Button == MouseButton.Right)
-				acquireMouse = !acquireMouse;
+				_acquireMouse = !_acquireMouse;
 			/*
 			if (e.Button == MouseButton.Left)
 			{
@@ -201,13 +200,13 @@ namespace SnowflakeEngine.WanderEngine
 
 		private void ChooseSpawnPoint()
 		{
-			var num = Generator.Next(SpawnPoints.Count);
-			var newPos = (Vector3f) SpawnPoints[num];
-			MapCamera.MoveCameraTo(newPos);
-			MapCamera.MoveCameraUpDown(12f);
+			var num = _generator.Next(_spawnPoints.Count);
+			var newPos = (Vector3F) _spawnPoints[num];
+			_mapCamera.MoveCameraTo(newPos);
+			_mapCamera.MoveCameraUpDown(12f);
 		}
 
-		public void ConnectToServer(IPAddress HostIP)
+		public void ConnectToServer(IPAddress hostIp)
 		{
 			Connected = false;
 			// miki-play-off Address deviceInformation = new Address();
@@ -221,14 +220,14 @@ namespace SnowflakeEngine.WanderEngine
 			// miki-play-off this.DPClient.FindHosts(applicationDescription, hostAddress, deviceInformation, null, 0, 0, 0, FindHostsFlags.None);
 		}
 
-		private void CreateItem(int ID, ItemType IType, Vector3f Pos, bool Active)
+		private void CreateItem(int id, ItemType type, Vector3F pos, bool active)
 		{
 			//this.RenderTarget.Invoke(new CreateItemDelegate(this.CreateItem_Safe), new object[] { ID, IType, Pos, Active });
 		}
 
-		private void CreateItem_Safe(int ID, ItemType IType, Vector3f Pos, bool Active)
+		private void CreateItem_Safe(int id, ItemType type, Vector3F pos, bool active)
 		{
-			lock (Items)
+			lock (_items)
 			{
 				/*Item item = new Item(Pos, IType, Glu.gluNewQuadric());
 				item.Active = Active;
@@ -241,7 +240,7 @@ namespace SnowflakeEngine.WanderEngine
 		{
 			DestroyInput();
 			DestroyNetwork();
-			textFont.Dispose();
+			_textFont.Dispose();
 		}
 
 		private void DestroyInput()
@@ -267,11 +266,11 @@ namespace SnowflakeEngine.WanderEngine
 			DisconnectFromServer();
 		}
 
-		private void Die(int KillerID)
+		private void Die(int killerId)
 		{
 			if (!IsDead)
 			{
-				DeathTime = 4f;
+				_deathTime = 4f;
 				Marked = false;
 				if (Connected)
 				{
@@ -287,7 +286,7 @@ namespace SnowflakeEngine.WanderEngine
 
 		public void DisableVoice()
 		{
-			if (VoiceEnabled)
+			if (_voiceEnabled)
 			{
 				// miki-play-off this.ClientVoice.TransmitTargets = new int[0];
 			}
@@ -297,7 +296,7 @@ namespace SnowflakeEngine.WanderEngine
 		{
 			if (Connected)
 			{
-				if (VoiceEnabled)
+				if (_voiceEnabled)
 				{
 					// miki-play-off this.ClientVoice.Dispose();
 					// miki-play-off this.ClientVoice = null;
@@ -677,9 +676,9 @@ namespace SnowflakeEngine.WanderEngine
 
 		private void Engine_AddPlayer(object sender, PlayerEventArgs e)
 		{
-			lock (IncomingPlayers)
+			lock (_incomingPlayers)
 			{
-				IncomingPlayers.Add(new NetworkPlayer(e.ID, e.Name, e.ModelName, e.InitialState, e.IsMarked));
+				_incomingPlayers.Add(new NetworkPlayer(e.Id, e.Name, e.ModelName, e.InitialState, e.IsMarked));
 			}
 		}
 
@@ -713,9 +712,9 @@ namespace SnowflakeEngine.WanderEngine
 
 		private void Engine_RemovePlayer(object sender, PlayerEventArgs e)
 		{
-			lock (OutgoingPlayerIDs)
+			lock (_outgoingPlayerIDs)
 			{
-				OutgoingPlayerIDs.Add(e.ID);
+				_outgoingPlayerIDs.Add(e.Id);
 			}
 		}
 
@@ -747,19 +746,19 @@ namespace SnowflakeEngine.WanderEngine
 				if (Weapon == WeaponType.Knife)
 				{
 					// miki-sound-off this.EngineSoundManager.PlaySound("swing");
-					StabTime = 0.3f;
-					var a = MapCamera.ProjectPosition(5f, 0f);
-					lock ((hashtable = NetworkPlayers))
+					_stabTime = 0.3f;
+					var a = _mapCamera.ProjectPosition(5f, 0f);
+					lock ((hashtable = _networkPlayers))
 					{
-						foreach (NetworkPlayer player in NetworkPlayers.Values)
+						foreach (NetworkPlayer player in _networkPlayers.Values)
 						{
-							if ((Vector3f.Distance(a, player.PlayerModel.Position) < 45.0) &&
+							if ((Vector3F.Distance(a, player.PlayerModel.Position) < 45.0) &&
 								(player.PlayerModel.ModelState != AnimationState.DeathFallFoward))
 							{
 								// miki-sound-off this.EngineSoundManager.PlaySound("pain");
 								if (Connected)
 								{
-									SendHurt(player.ID);
+									SendHurt(player.Id);
 								}
 								player.AddColorMask(1f, 0f, 0f, 0.3f);
 							}
@@ -769,7 +768,7 @@ namespace SnowflakeEngine.WanderEngine
 				}
 				if (Weapon == WeaponType.Laser)
 				{
-					LaserTime = 0.9f;
+					_laserTime = 0.9f;
 					if (Ammo <= 0)
 					{
 						// miki-sound-off this.EngineSoundManager.PlaySound("noammo");
@@ -779,17 +778,18 @@ namespace SnowflakeEngine.WanderEngine
 						// miki-sound-off this.EngineSoundManager.PlaySound("laser");
 						Ammo--;
 						AmmoChanged(this, null);
-						CurrentMap.DetectCollisionRay(MapCamera.Position, MapCamera.ProjectPositionWithY(10000f, 0f));
-						var start = new Vector3f(MapCamera.Position.X, MapCamera.Position.Y, MapCamera.Position.Z);
+						_currentMap.DetectCollisionRay(_mapCamera.Position, _mapCamera.ProjectPositionWithY(10000f, 0f));
+						var start = new Vector3F(_mapCamera.Position.X, _mapCamera.Position.Y, _mapCamera.Position.Z);
 						var info = new LaserBeamInfo();
-						info.Start = MapCamera.ProjectPositionWithY(0f, 3f);
-						info.Start2 = MapCamera.ProjectPositionWithY(0f, 5f);
-						info.End = new Vector3f(CurrentMap.CollisionInfo.EndPoint.X, CurrentMap.CollisionInfo.EndPoint.Y,
-							CurrentMap.CollisionInfo.EndPoint.Z);
+						info.Start = _mapCamera.ProjectPositionWithY(0f, 3f);
+						info.Start2 = _mapCamera.ProjectPositionWithY(0f, 5f);
+						info.End = new Vector3F(_currentMap.CollisionInfo.EndPoint.X,
+							_currentMap.CollisionInfo.EndPoint.Y,
+							_currentMap.CollisionInfo.EndPoint.Z);
 						info.TimeRemaining = 0.3f;
-						lock (LaserBeams)
+						lock (_laserBeams)
 						{
-							LaserBeams.Add(info);
+							_laserBeams.Add(info);
 						}
 						if (Connected)
 						{
@@ -809,27 +809,27 @@ namespace SnowflakeEngine.WanderEngine
 							this.DPClient.Send(sendData, 0, SendFlags.Guaranteed | SendFlags.Sync);
 							*/
 						}
-						lock ((hashtable = NetworkPlayers))
+						lock ((hashtable = _networkPlayers))
 						{
-							foreach (NetworkPlayer player2 in NetworkPlayers.Values)
+							foreach (NetworkPlayer player2 in _networkPlayers.Values)
 							{
 								if (player2.PlayerModel.RayCollides(start, info.End))
 								{
 									// miki-sound-off this.EngineSoundManager.PlaySound("pain");
 									if (Connected)
 									{
-										SendHurt(player2.ID);
+										SendHurt(player2.Id);
 									}
 									player2.AddColorMask(1f, 0f, 0f, 0.3f);
 								}
 							}
 						}
-						var angle = Utility.CapAngle(90f - MapCamera.Yaw);
-						Forces[BlastForce].Direction.X = -Utility.CosDeg(angle);
-						Forces[BlastForce].Direction.Y = Utility.SinDeg(MapCamera.Pitch);
-						Forces[BlastForce].Direction.Z = Utility.SinDeg(angle);
-						Forces[BlastForce].SetVelocity(Forces[BlastForce].MaxVelocity.X, 0f,
-							Forces[BlastForce].MaxVelocity.Z);
+						var angle = Utility.CapAngle(90f - _mapCamera.Yaw);
+						_forces[_blastForce].Direction.X = -Utility.CosDeg(angle);
+						_forces[_blastForce].Direction.Y = Utility.SinDeg(_mapCamera.Pitch);
+						_forces[_blastForce].Direction.Z = Utility.SinDeg(angle);
+						_forces[_blastForce].SetVelocity(_forces[_blastForce].MaxVelocity.X, 0f,
+							_forces[_blastForce].MaxVelocity.Z);
 					}
 				}
 			}
@@ -837,17 +837,10 @@ namespace SnowflakeEngine.WanderEngine
 
 		private Item GetItemCollision()
 		{
-			foreach (Item item2 in Items.Values)
-			{
-				if (item2.Active && (Vector3f.Distance(MapCamera.Position, item2.Position) <= 25.0))
-				{
-					return item2;
-				}
-			}
-			return null;
+		    return _items.Values.Cast<Item>().FirstOrDefault(item2 => item2.Active && (Vector3F.Distance(_mapCamera.Position, item2.Position) <= 25.0));
 		}
 
-		private void InitializeAll()
+	    private void InitializeAll()
 		{
 			//GL.GetInteger(GetPName.MaxTextureUnits, out texUnits);
 
@@ -856,31 +849,31 @@ namespace SnowflakeEngine.WanderEngine
 			InitializeNetwork();
 			InitializeSound();
 			InitializeForces();
-			KnifeTexture = new Texture(Quake3FilesPath +
-									   Utility.AdaptRelativePathToPlatform("textures/bookstore/knife.jpg"));
-			textFont = new Text2D(Quake3FilesPath + Utility.AdaptRelativePathToPlatform("fonts/NeHe.Lesson17.Font.bmp"));
+			_knifeTexture = new Texture(Quake3FilesPath +
+										Utility.AdaptRelativePathToPlatform("textures/bookstore/knife.jpg"));
+			_textFont = new Text2D(Quake3FilesPath + Utility.AdaptRelativePathToPlatform("fonts/NeHe.Lesson17.Font.bmp"));
 		}
 
 		private void InitializeForces()
 		{
-			RunForce = Forces.Add(new Force());
-			Forces[RunForce].MinVelocity = new Vector3f(0f, 0f, 0f);
-			Forces[RunForce].MaxVelocity = new Vector3f(300f, 300f, 300f);
-			Forces[RunForce].Acceleration = new Vector3f(-80000f, -80000f, -80000f);
-			StrafeForce = Forces.Add(new Force());
-			Forces[StrafeForce].MinVelocity = new Vector3f(0f, 0f, 0f);
-			Forces[StrafeForce].MaxVelocity = new Vector3f(300f, 300f, 300f);
-			Forces[StrafeForce].Acceleration = new Vector3f(-150000f, -150000f, -150000f);
-			GravityForce = Forces.Add(new Force());
-			Forces[GravityForce].MaxVelocity = new Vector3f(0f, 1500f, 0f);
-			Forces[GravityForce].Direction.Y = -6.674f;
-			JumpForce = Forces.Add(new Force());
-			Forces[JumpForce].MaxVelocity = new Vector3f(0f, 500f, 0f);
-			Forces[JumpForce].Acceleration.Y = -40000f;
-			Forces[JumpForce].Direction.Y = 1f;
-			BlastForce = Forces.Add(new Force());
-			Forces[BlastForce].MaxVelocity = new Vector3f(200f, 0f, 200f);
-			Forces[BlastForce].Acceleration = new Vector3f(-22000f, 0f, -22000f);
+			_runForce = _forces.Add(new Force());
+			_forces[_runForce].MinVelocity = new Vector3F(0f, 0f, 0f);
+			_forces[_runForce].MaxVelocity = new Vector3F(300f, 300f, 300f);
+			_forces[_runForce].Acceleration = new Vector3F(-80000f, -80000f, -80000f);
+			_strafeForce = _forces.Add(new Force());
+			_forces[_strafeForce].MinVelocity = new Vector3F(0f, 0f, 0f);
+			_forces[_strafeForce].MaxVelocity = new Vector3F(300f, 300f, 300f);
+			_forces[_strafeForce].Acceleration = new Vector3F(-150000f, -150000f, -150000f);
+			_gravityForce = _forces.Add(new Force());
+			_forces[_gravityForce].MaxVelocity = new Vector3F(0f, 1500f, 0f);
+			_forces[_gravityForce].Direction.Y = -4f;
+			_jumpForce = _forces.Add(new Force());
+			_forces[_jumpForce].MaxVelocity = new Vector3F(0f, 500f, 0f);
+			_forces[_jumpForce].Acceleration.Y = -40000f;
+			_forces[_jumpForce].Direction.Y = 1f;
+			_blastForce = _forces.Add(new Force());
+			_forces[_blastForce].MaxVelocity = new Vector3F(200f, 0f, 200f);
+			_forces[_blastForce].Acceleration = new Vector3F(-22000f, 0f, -22000f);
 		}
 
 		private void InitializeGraphics()
@@ -967,24 +960,12 @@ namespace SnowflakeEngine.WanderEngine
 
 		private void InitializeSound()
 		{
-			// miki-sound-off this.EngineSoundManager = new SoundManager(this.RenderForm);
-			// miki-sound-off string str = Quake3FilesPath + @"sounds\";
-			// miki-sound-off this.EngineSoundManager.LoadSound("swing", str + "swing.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("laser", str + "laser.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("pain", str + "pain.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("death", str + "death.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("respawn", str + "respawn.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("item", str + "powerup.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("marked", str + "marked.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("noammo", str + "noammo.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("hurt", str + "hurt.wav");
-			// miki-sound-off this.EngineSoundManager.LoadSound("jump", str + "jump.wav");
 		}
 
-		public void LoadMap(string DirectoryPath, string MapName)
+		public void LoadMap(string directoryPath, string mapName)
 		{
-			Directory.SetCurrentDirectory(DirectoryPath);
-			CurrentMap = new BSPFile(MapName);
+			Directory.SetCurrentDirectory(directoryPath);
+			_currentMap = new BspFile(mapName);
 			GL.MatrixMode(MatrixMode.Modelview);
 			DebugWindow.Log("Matrixmode: " + MatrixMode.Modelview);
 			GL.LoadIdentity();
@@ -992,40 +973,39 @@ namespace SnowflakeEngine.WanderEngine
 			GL.MatrixMode(MatrixMode.Projection);
 			DebugWindow.Log("Matrixmode: " + MatrixMode.Projection);
 			GL.LoadIdentity();
-			var entityArray = CurrentMap.Entities.SeekEntitiesByClassname("info_player_deathmatch");
-			foreach (var entity in entityArray)
+			var entityArray = _currentMap.Entities.SeekEntitiesByClassname("info_player_deathmatch");
+			foreach (var strArray in entityArray.Select(entity => entity.SeekValuesByArgument("origin")))
 			{
-				var strArray = entity.SeekValuesByArgument("origin");
-				if (strArray.Length > 0)
-				{
-					var strArray2 = Regex.Split(strArray[0], " ");
-					if (strArray2.Length == 3)
-					{
-						var vector = new Vector3f();
-						try
-						{
-							vector.X += float.Parse(strArray2[0]);
-							vector.Z += -float.Parse(strArray2[1]);
-							vector.Y += float.Parse(strArray2[2]);
-							SpawnPoints.Add(vector);
-						}
-						catch
-						{
-						}
-					}
-				}
-				var strArray3 = entityArray[0].SeekValuesByArgument("angle");
-				if (strArray3.Length > 0)
-				{
-					try
-					{
-						var num = float.Parse(strArray3[0]);
-						MapCamera.Yaw = 90f - num;
-					}
-					catch
-					{
-					}
-				}
+			    if (strArray.Length > 0)
+			    {
+			        var strArray2 = Regex.Split(strArray[0], " ");
+			        if (strArray2.Length == 3)
+			        {
+			            var vector = new Vector3F();
+			            try
+			            {
+			                vector.X += float.Parse(strArray2[0]);
+			                vector.Z += -float.Parse(strArray2[1]);
+			                vector.Y += float.Parse(strArray2[2]);
+			                _spawnPoints.Add(vector);
+			            }
+			            catch
+			            {
+			            }
+			        }
+			    }
+			    var strArray3 = entityArray[0].SeekValuesByArgument("angle");
+			    if (strArray3.Length > 0)
+			    {
+			        try
+			        {
+			            var num = float.Parse(strArray3[0]);
+			            _mapCamera.Yaw = 90f - num;
+			        }
+			        catch
+			        {
+			        }
+			    }
 			}
 			DebugWindow.Log("Loaded map entities");
 			OnResizeControl();
@@ -1034,12 +1014,12 @@ namespace SnowflakeEngine.WanderEngine
 
 		private void OnResizeControl()
 		{
-			GL.Viewport(0, 0, winWidth, winHeight);
-			DebugWindow.Log("Window resize: H:" + winHeight + " W:" + winWidth);
+			GL.Viewport(0, 0, _winWidth, _winHeight);
+			DebugWindow.Log("Window resize: H:" + _winHeight + " W:" + _winWidth);
 			GL.MatrixMode(MatrixMode.Projection);
 			GL.LoadIdentity();
-			var num = (winWidth + 0.1f)/winHeight;
-			gluPerspective(70.0, num, 1.0, 5000.0);
+			var num = (_winWidth + 0.1f)/_winHeight;
+			GluPerspective(70.0, num, 1.0, 5000.0);
 			GL.MatrixMode(MatrixMode.Modelview);
 			GL.LoadIdentity();
 		}
@@ -1078,19 +1058,19 @@ namespace SnowflakeEngine.WanderEngine
 
 		public void Render()
 		{
-			if (CurrentMap != null)
+			if (_currentMap != null)
 			{
 				Hashtable hashtable;
 				PrepareRenderMap();
-				MapCamera.UpdateView();
-				MapFrustrum.UpdateFrustrum();
-				CurrentMap.RenderLevel(MapCamera.Position, MapFrustrum);
-				lock ((hashtable = Items))
+				_mapCamera.UpdateView();
+				_mapFrustrum.UpdateFrustrum();
+				_currentMap.RenderLevel(_mapCamera.Position, _mapFrustrum);
+				lock ((hashtable = _items))
 				{
 					GL.Disable(EnableCap.Texture2D);
 					GL.Enable(EnableCap.Blend);
 					GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.DstAlpha);
-					foreach (Item item in Items.Values)
+					foreach (Item item in _items.Values)
 					{
 						if (!item.Active)
 						{
@@ -1098,7 +1078,7 @@ namespace SnowflakeEngine.WanderEngine
 						}
 						GL.PushMatrix();
 						GL.Translate(item.Position.X, item.Position.Y, item.Position.Z);
-						switch (item.IType)
+						switch (item.Type)
 						{
 							case ItemType.Health:
 								GL.Color4(0f, 0f, 1f, item.Alpha);
@@ -1115,7 +1095,7 @@ namespace SnowflakeEngine.WanderEngine
 						// miki Glu.gluSphere(item.Quad, 10.0, 15, 15);
 						if (item.AlphaDir)
 						{
-							item.Alpha += 0.5f*TimeElapsed;
+							item.Alpha += 0.5f*_timeElapsed;
 							if (item.Alpha > 1f)
 							{
 								item.Alpha = 1f;
@@ -1124,7 +1104,7 @@ namespace SnowflakeEngine.WanderEngine
 						}
 						else
 						{
-							item.Alpha -= 0.5f*TimeElapsed;
+							item.Alpha -= 0.5f*_timeElapsed;
 							if (item.Alpha < 0.3f)
 							{
 								item.Alpha = 0.3f;
@@ -1137,17 +1117,17 @@ namespace SnowflakeEngine.WanderEngine
 					GL.Enable(EnableCap.Texture2D);
 					GL.Disable(EnableCap.Blend);
 				}
-				lock ((hashtable = NetworkPlayers))
+				lock ((hashtable = _networkPlayers))
 				{
-					foreach (NetworkPlayer player in NetworkPlayers.Values)
+					foreach (NetworkPlayer player in _networkPlayers.Values)
 					{
-						player.Update(TimeElapsed);
+						player.Update(_timeElapsed);
 						//this.textFont.glPrint(player.PlayerModel.Position.X - player.PlayerModel.Center.X, player.PlayerModel.BoundMax.Y + player.PlayerModel.Position.Y, player.PlayerModel.Position.Z + player.PlayerModel.Center.Z, player.Name);
 					}
 				}
-				if ((HurtTime > 0f) || (DeathTime > 0f))
+				if ((_hurtTime > 0f) || (_deathTime > 0f))
 				{
-					HurtTime -= TimeElapsed;
+					_hurtTime -= _timeElapsed;
 					GL.PushMatrix();
 					GL.LoadIdentity();
 					GL.Enable(EnableCap.Blend);
@@ -1195,14 +1175,14 @@ namespace SnowflakeEngine.WanderEngine
 					GL.Enable(EnableCap.Texture2D);
 					GL.PopMatrix();
 				}
-				lock (LaserBeams)
+				lock (_laserBeams)
 				{
-					for (var i = 0; i < LaserBeams.Count; i++)
+					for (var i = 0; i < _laserBeams.Count; i++)
 					{
-						var info = (LaserBeamInfo) LaserBeams[i];
+						var info = (LaserBeamInfo) _laserBeams[i];
 						if (info.TimeRemaining > 0f)
 						{
-							info.TimeRemaining -= TimeElapsed;
+							info.TimeRemaining -= _timeElapsed;
 							GL.Disable(EnableCap.CullFace);
 							GL.Enable(EnableCap.Blend);
 							GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.DstAlpha);
@@ -1249,7 +1229,7 @@ namespace SnowflakeEngine.WanderEngine
 						}
 						else
 						{
-							LaserBeams.RemoveAt(i);
+							_laserBeams.RemoveAt(i);
 							i--;
 						}
 					}
@@ -1261,10 +1241,10 @@ namespace SnowflakeEngine.WanderEngine
 					GL.Disable(EnableCap.DepthTest);
 					GL.Disable(EnableCap.CullFace);
 					GL.DepthMask(false);
-					GL.BindTexture(TextureTarget.Texture2D, KnifeTexture.TextureID);
-					if (StabTime > 0f)
+					GL.BindTexture(TextureTarget.Texture2D, _knifeTexture.TextureId);
+					if (_stabTime > 0f)
 					{
-						StabTime -= TimeElapsed;
+						_stabTime -= _timeElapsed;
 						GL.Begin(BeginMode.Triangles);
 						GL.TexCoord2(0f, 0f);
 						GL.Vertex3(5f, -10f, -10f);
@@ -1293,9 +1273,9 @@ namespace SnowflakeEngine.WanderEngine
 				}
 				else if (Weapon == WeaponType.Laser)
 				{
-					if (LaserTime > 0f)
+					if (_laserTime > 0f)
 					{
-						LaserTime -= TimeElapsed;
+						_laserTime -= _timeElapsed;
 					}
 					GL.PushMatrix();
 					GL.Disable(EnableCap.DepthTest);
@@ -1346,11 +1326,11 @@ namespace SnowflakeEngine.WanderEngine
 			HealthChanged(this, null);
 			Ammo = 10;
 			AmmoChanged(this, null);
-			Forces.ClearDisposableForces();
+			_forces.ClearDisposableForces();
 			ChooseSpawnPoint();
 		}
 
-		private void SendHurt(int ID)
+		private void SendHurt(int id)
 		{
 			/* miki-play-off NetworkPacket sendData = new NetworkPacket();
 			sendData.Write(MessageType.Hurt);
@@ -1371,7 +1351,7 @@ namespace SnowflakeEngine.WanderEngine
 			*/
 		}
 
-		public void SendMessage(int ID, string Message, bool IsPrivate)
+		public void SendMessage(int id, string message, bool isPrivate)
 		{
 			/* miki-play-off 
 			NetworkPacket sendData = new NetworkPacket();
@@ -1391,11 +1371,11 @@ namespace SnowflakeEngine.WanderEngine
 
 		private void SendMovementState()
 		{
-			var num = 90f - MapCamera.Yaw;
-			LastState.X = MapCamera.Position.X;
-			LastState.Y = MapCamera.Position.Y;
-			LastState.Z = MapCamera.Position.Z;
-			LastState.Yaw = MapCamera.Yaw;
+			var num = 90f - _mapCamera.Yaw;
+			_lastState.X = _mapCamera.Position.X;
+			_lastState.Y = _mapCamera.Position.Y;
+			_lastState.Z = _mapCamera.Position.Z;
+			_lastState.Yaw = _mapCamera.Yaw;
 			/* miki-play-off 
 			NetworkPacket sendData = new NetworkPacket();
 			sendData.Write(3);
@@ -1408,126 +1388,126 @@ namespace SnowflakeEngine.WanderEngine
 			*/
 		}
 
-		public void SetVoiceTarget(int TargetID)
+		public void SetVoiceTarget(int targetId)
 		{
-			if (VoiceEnabled)
+			if (_voiceEnabled)
 			{
 				// miki-play-off this.ClientVoice.TransmitTargets = new int[] { TargetID };
 			}
 		}
 
-		private bool TrySlide(Vector3f SourceVector, Vector3f ProjectedPos)
+		private bool TrySlide(Vector3F sourceVector, Vector3F projectedPos)
 		{
-			var vector = new Vector3f();
-			for (var vector2 = new Vector3f(ProjectedPos.X, ProjectedPos.Y, ProjectedPos.Z);
+			var vector = new Vector3F();
+			for (var vector2 = new Vector3F(projectedPos.X, projectedPos.Y, projectedPos.Z);
 				((Math.Abs(vector2.X) > 0.0001f) || (Math.Abs(vector2.Y) > 0.0001f)) || (Math.Abs(vector2.Z) > 0.0001f);
-				vector2 = new Vector3f(vector.X, vector.Y, vector.Z))
+				vector2 = new Vector3F(vector.X, vector.Y, vector.Z))
 			{
-				CurrentMap.DetectCollisionBox(SourceVector, SourceVector + vector2, PlayerState.BoundMin,
-					PlayerState.BoundMax);
-				if (CurrentMap.CollisionInfo.Fraction > 0f)
+				_currentMap.DetectCollisionBox(sourceVector, sourceVector + vector2, _playerState.BoundMin,
+					_playerState.BoundMax);
+				if (_currentMap.CollisionInfo.Fraction > 0f)
 				{
-					MapCamera.MoveCameraTo(CurrentMap.CollisionInfo.EndPoint);
+					_mapCamera.MoveCameraTo(_currentMap.CollisionInfo.EndPoint);
 					return true;
 				}
-				var vector3 = new Vector3f();
-				vector3.CopyFrom(CurrentMap.CollisionInfo.Normal);
+				var vector3 = new Vector3F();
+				vector3.CopyFrom(_currentMap.CollisionInfo.Normal);
 				vector3.Normalize();
 				vector = vector2 - vector3*vector3.Dot(vector2);
 			}
 			return false;
 		}
 
-		private bool TryStepUpAndSlide(Vector3f ProjectedPos)
+		private bool TryStepUpAndSlide(Vector3F projectedPos)
 		{
-			CurrentMap.DetectCollisionBox(MapCamera.Position, MapCamera.Position + PlayerState.Step,
-				PlayerState.BoundMin, PlayerState.BoundMax);
-			if (CurrentMap.CollisionInfo.Fraction == 0f)
+			_currentMap.DetectCollisionBox(_mapCamera.Position, _mapCamera.Position + _playerState.Step,
+				_playerState.BoundMin, _playerState.BoundMax);
+			if (_currentMap.CollisionInfo.Fraction == 0f)
 			{
 				return false;
 			}
-			if (!TrySlide(CurrentMap.CollisionInfo.EndPoint, ProjectedPos))
+			if (!TrySlide(_currentMap.CollisionInfo.EndPoint, projectedPos))
 			{
 				return false;
 			}
-			CurrentMap.DetectCollisionBox(MapCamera.Position, MapCamera.Position - PlayerState.Step,
-				PlayerState.BoundMin, PlayerState.BoundMax);
-			if (CurrentMap.CollisionInfo.Fraction == 0f)
+			_currentMap.DetectCollisionBox(_mapCamera.Position, _mapCamera.Position - _playerState.Step,
+				_playerState.BoundMin, _playerState.BoundMax);
+			if (_currentMap.CollisionInfo.Fraction == 0f)
 			{
 				return false;
 			}
-			MapCamera.MoveCameraTo(CurrentMap.CollisionInfo.EndPoint);
+			_mapCamera.MoveCameraTo(_currentMap.CollisionInfo.EndPoint);
 			return true;
 		}
 
-		public void UpdateFrame(float TimeElapsed)
+		public void UpdateFrame(float timeElapsed)
 		{
-			this.TimeElapsed = TimeElapsed;
+			_timeElapsed = timeElapsed;
 
-			var auxFps = 1/TimeElapsed;
+			var auxFps = 1/timeElapsed;
 
 			if (!IsPaused)
 			{
-				if (CurrentMap != null)
+				if (_currentMap != null)
 				{
 					ArrayList list;
 					Hashtable hashtable;
-					lock ((list = IncomingPlayers))
+					lock ((list = _incomingPlayers))
 					{
-						foreach (NetworkPlayer player in IncomingPlayers)
+						foreach (NetworkPlayer player in _incomingPlayers)
 						{
 							Directory.SetCurrentDirectory(Quake3FilesPath + "models");
-							player.PlayerModel = new MD2Model(player.ModelName + ".md2", player.ModelName + ".bmp");
+							player.PlayerModel = new Md2Model(player.ModelName + ".md2", player.ModelName + ".bmp");
 							if (player.InitialState == null)
 							{
-								player.PlayerModel.Position = new Vector3f();
+								player.PlayerModel.Position = new Vector3F();
 							}
 							else
 							{
-								player.PlayerModel.Position = new Vector3f(player.InitialState.X, 0f,
+								player.PlayerModel.Position = new Vector3F(player.InitialState.X, 0f,
 									player.InitialState.Z);
 								player.PlayerModel.Yaw = player.InitialState.Yaw;
 							}
 							// miki-sound-off player.LaserSound = this.EngineSoundManager.GenerateName();
 							// miki-sound-off this.EngineSoundManager.LoadSound3D(player.LaserSound, Quake3FilesPath + @"sounds\laser.wav");
-							lock ((hashtable = NetworkPlayers))
+							lock ((hashtable = _networkPlayers))
 							{
-								NetworkPlayers[player.ID] = player;
+								_networkPlayers[player.Id] = player;
 							}
 						}
-						IncomingPlayers.Clear();
+						_incomingPlayers.Clear();
 					}
-					lock ((list = OutgoingPlayerIDs))
+					lock ((list = _outgoingPlayerIDs))
 					{
-						foreach (int num in OutgoingPlayerIDs)
+						foreach (int num in _outgoingPlayerIDs)
 						{
-							lock ((hashtable = NetworkPlayers))
+							lock ((hashtable = _networkPlayers))
 							{
-								if (NetworkPlayers.ContainsKey(num))
+								if (_networkPlayers.ContainsKey(num))
 								{
-									NetworkPlayers.Remove(num);
+									_networkPlayers.Remove(num);
 								}
 							}
 						}
-						OutgoingPlayerIDs.Clear();
+						_outgoingPlayerIDs.Clear();
 					}
-					UpdateInput(ref PlayerState);
+					UpdateInput(ref _playerState);
 					if (IsDead)
 					{
-						DeathTime -= TimeElapsed;
-						if (DeathTime <= 0f)
+						_deathTime -= timeElapsed;
+						if (_deathTime <= 0f)
 						{
 							Respawn();
 						}
 					}
 					else
 					{
-						UpdatePlayerState(PlayerState);
+						UpdatePlayerState(_playerState);
 						var itemCollision = GetItemCollision();
 						if (itemCollision != null)
 						{
 							var flag = false;
-							switch (itemCollision.IType)
+							switch (itemCollision.Type)
 							{
 								case ItemType.Health:
 									if (Health < 100)
@@ -1576,7 +1556,7 @@ namespace SnowflakeEngine.WanderEngine
 							}
 						}
 					}
-					if (Connected && NextStateReady)
+					if (Connected && _nextStateReady)
 					{
 						SendMovementState();
 					}
@@ -1589,34 +1569,35 @@ namespace SnowflakeEngine.WanderEngine
 				Render();
 
 				GL.Enable(EnableCap.Blend);
-				textFont.glPrint(10, 20,
-					$"Position: X: {(int)MapCamera.Position.X} Y: {(int)MapCamera.Position.Y} Z: {(int)MapCamera.Position.Z}", 0);
+				_textFont.GlPrint(10, 20,
+					$"Position: X: {(int) _mapCamera.Position.X} Y: {(int) _mapCamera.Position.Y} Z: {(int) _mapCamera.Position.Z}",
+					0);
 			}
 		}
 
 		private void UpdateMouseDelta()
 		{
-			pointer_current = Cursor.Position;
-			pointer_delta = new Size(pointer_current.X - pointer_previous.X,
-				pointer_current.Y - pointer_previous.Y);
+			_pointerCurrent = Cursor.Position;
+			_pointerDelta = new Size(_pointerCurrent.X - _pointerPrevious.X,
+				_pointerCurrent.Y - _pointerPrevious.Y);
 		}
 
 		private void UpdateMousePosition()
 		{
-			if (CursorHide == false)
+			if (_cursorHide == false)
 			{
 				Cursor.Hide();
-				CursorHide = true;
+				_cursorHide = true;
 			}
 
 			Cursor.Position =
-				new Point(gameWin.Bounds.Left + (gameWin.Bounds.Width/2),
-					gameWin.Bounds.Top + (gameWin.Bounds.Height/2));
+				new Point(_gameWin.Bounds.Left + (_gameWin.Bounds.Width/2),
+					_gameWin.Bounds.Top + (_gameWin.Bounds.Height/2));
 
-			pointer_previous = Cursor.Position;
+			_pointerPrevious = Cursor.Position;
 		}
 
-		private void UpdateInput(ref CommandSet State)
+		private void UpdateInput(ref CommandSet state)
 		{
 /*
 			State.PlayerMovement.X = 0f;
@@ -1624,10 +1605,10 @@ namespace SnowflakeEngine.WanderEngine
 			State.PlayerMovement.Z = 0f;
 			State.PlayerLook.X = 0f;
 			State.PlayerLook.Y = 0f;*/
-			if (m_ProcessInput)
+			if (_mProcessInput)
 			{
 				ProcessKeyboardEvents();
-				ProcessMouseEvents(ref State);
+				ProcessMouseEvents(ref state);
 			}
 		}
 
@@ -1636,48 +1617,48 @@ namespace SnowflakeEngine.WanderEngine
 			try
 			{
 				// miki-input-off KeyboardState currentKeyboardState = this.KeyboardDevice.GetCurrentKeyboardState();
-				if (gameWin.Keyboard[ControlCfg.MoveForward])
+				if (_gameWin.Keyboard[_controlCfg.MoveForward])
 				{
-					var angle = Utility.CapAngle(90f - MapCamera.Yaw);
-					Forces[RunForce].Direction.X = Utility.CosDeg(angle);
-					Forces[RunForce].Direction.Z = -Utility.SinDeg(angle);
-					Forces[RunForce].AddVelocityX(Forces[RunForce].MaxVelocity.X);
-					Forces[RunForce].AddVelocityZ(Forces[RunForce].MaxVelocity.Z);
+					var angle = Utility.CapAngle(90f - _mapCamera.Yaw);
+					_forces[_runForce].Direction.X = Utility.CosDeg(angle);
+					_forces[_runForce].Direction.Z = -Utility.SinDeg(angle);
+					_forces[_runForce].AddVelocityX(_forces[_runForce].MaxVelocity.X);
+					_forces[_runForce].AddVelocityZ(_forces[_runForce].MaxVelocity.Z);
 				}
-				else if (gameWin.Keyboard[ControlCfg.MoveBack])
+				else if (_gameWin.Keyboard[_controlCfg.MoveBack])
 				{
-					var num2 = Utility.CapAngle(90f - MapCamera.Yaw);
-					Forces[RunForce].Direction.X = -Utility.CosDeg(num2);
-					Forces[RunForce].Direction.Z = Utility.SinDeg(num2);
-					Forces[RunForce].AddVelocityX(Forces[RunForce].MaxVelocity.X);
-					Forces[RunForce].AddVelocityZ(Forces[RunForce].MaxVelocity.Z);
+					var num2 = Utility.CapAngle(90f - _mapCamera.Yaw);
+					_forces[_runForce].Direction.X = -Utility.CosDeg(num2);
+					_forces[_runForce].Direction.Z = Utility.SinDeg(num2);
+					_forces[_runForce].AddVelocityX(_forces[_runForce].MaxVelocity.X);
+					_forces[_runForce].AddVelocityZ(_forces[_runForce].MaxVelocity.Z);
 				}
-				if (gameWin.Keyboard[ControlCfg.LeftStrafe])
+				if (_gameWin.Keyboard[_controlCfg.LeftStrafe])
 				{
-					var num3 = Utility.CapAngle(-MapCamera.Yaw);
-					Forces[StrafeForce].Direction.X = -Utility.CosDeg(num3);
-					Forces[StrafeForce].Direction.Z = Utility.SinDeg(num3);
-					Forces[StrafeForce].AddVelocityX(Forces[StrafeForce].MaxVelocity.X);
-					Forces[StrafeForce].AddVelocityZ(Forces[StrafeForce].MaxVelocity.Z);
+					var num3 = Utility.CapAngle(-_mapCamera.Yaw);
+					_forces[_strafeForce].Direction.X = -Utility.CosDeg(num3);
+					_forces[_strafeForce].Direction.Z = Utility.SinDeg(num3);
+					_forces[_strafeForce].AddVelocityX(_forces[_strafeForce].MaxVelocity.X);
+					_forces[_strafeForce].AddVelocityZ(_forces[_strafeForce].MaxVelocity.Z);
 				}
-				else if (gameWin.Keyboard[ControlCfg.RightStrafe])
+				else if (_gameWin.Keyboard[_controlCfg.RightStrafe])
 				{
-					var num4 = Utility.CapAngle(-MapCamera.Yaw);
-					Forces[StrafeForce].Direction.X = Utility.CosDeg(num4);
-					Forces[StrafeForce].Direction.Z = -Utility.SinDeg(num4);
-					Forces[StrafeForce].AddVelocityX(Forces[StrafeForce].MaxVelocity.X);
-					Forces[StrafeForce].AddVelocityZ(Forces[StrafeForce].MaxVelocity.Z);
+					var num4 = Utility.CapAngle(-_mapCamera.Yaw);
+					_forces[_strafeForce].Direction.X = Utility.CosDeg(num4);
+					_forces[_strafeForce].Direction.Z = -Utility.SinDeg(num4);
+					_forces[_strafeForce].AddVelocityX(_forces[_strafeForce].MaxVelocity.X);
+					_forces[_strafeForce].AddVelocityZ(_forces[_strafeForce].MaxVelocity.Z);
 				}
 				if (EnableJump)
 				{
-					if (gameWin.Keyboard[ControlCfg.Jump] && (Forces[GravityForce].GetVelocityY() <= 0f))
+					if (_gameWin.Keyboard[_controlCfg.Jump] && (_forces[_gravityForce].GetVelocityY() <= 0f))
 					{
 						EnableJump = false;
 						// miki-sound-off this.EngineSoundManager.PlaySound("jump");
-						Forces[JumpForce].AddVelocityY(Forces[JumpForce].MaxVelocity.Y);
+						_forces[_jumpForce].AddVelocityY(_forces[_jumpForce].MaxVelocity.Y);
 					}
 				}
-				else if (!gameWin.Keyboard[ControlCfg.Jump])
+				else if (!_gameWin.Keyboard[_controlCfg.Jump])
 				{
 					EnableJump = true;
 				}
@@ -1705,34 +1686,34 @@ namespace SnowflakeEngine.WanderEngine
 			}
 		}
 
-		private void ProcessMouseEvents(ref CommandSet State)
+		private void ProcessMouseEvents(ref CommandSet state)
 		{
 			try
 			{
 				//MouseState currentMouseState = this.MouseDevice.CurrentMouseState;
 				//byte[] mouseButtons = currentMouseState.GetMouseButtons();
 
-				if (acquireMouse)
+				if (_acquireMouse)
 				{
 					UpdateMouseDelta();
 
-					PlayerState.PlayerLook.X = -pointer_delta.Width;
+					_playerState.PlayerLook.X = -_pointerDelta.Width;
 
-					if (ControlCfg.InvertMouse)
+					if (_controlCfg.InvertMouse)
 					{
-						PlayerState.PlayerLook.Y = pointer_delta.Height;
+						_playerState.PlayerLook.Y = _pointerDelta.Height;
 					}
 					else
 					{
-						PlayerState.PlayerLook.Y = -pointer_delta.Height;
+						_playerState.PlayerLook.Y = -_pointerDelta.Height;
 					}
 
 					UpdateMousePosition();
 				}
-				else if (CursorHide)
+				else if (_cursorHide)
 				{
 					Cursor.Show();
-					CursorHide = false;
+					_cursorHide = false;
 				}
 			}
 			catch
@@ -1740,45 +1721,45 @@ namespace SnowflakeEngine.WanderEngine
 			}
 		}
 
-		private void UpdatePlayerState(CommandSet PlayerState)
+		private void UpdatePlayerState(CommandSet playerState)
 		{
-			var num = TimeElapsed*ControlCfg.MouseSpeedHorz;
-			var num2 = TimeElapsed*ControlCfg.MouseSpeedVert;
-			MapCamera.SetMouseView(PlayerState.PlayerLook.X*num, PlayerState.PlayerLook.Y*num2);
-			CurrentMap.DetectCollisionBox(MapCamera.Position, MapCamera.Position - PlayerState.Step,
-				PlayerState.BoundMin, PlayerState.BoundMax);
-			if (CurrentMap.CollisionInfo.Fraction > 0f)
+			var num = _timeElapsed*_controlCfg.MouseSpeedHorz;
+			var num2 = _timeElapsed*_controlCfg.MouseSpeedVert;
+			_mapCamera.SetMouseView(playerState.PlayerLook.X*num, playerState.PlayerLook.Y*num2);
+			_currentMap.DetectCollisionBox(_mapCamera.Position, _mapCamera.Position - playerState.Step,
+				playerState.BoundMin, playerState.BoundMax);
+			if (_currentMap.CollisionInfo.Fraction > 0f)
 			{
-				if (Forces[GravityForce].GetVelocityY() <= 0f)
+				if (_forces[_gravityForce].GetVelocityY() <= 0f)
 				{
-					Forces[GravityForce].Acceleration.Y = 40000f;
+					_forces[_gravityForce].Acceleration.Y = 40000f;
 				}
 			}
 			else
 			{
-				Forces[GravityForce].Acceleration.Y = 0f;
-				Forces[GravityForce].SetVelocity(0f, 0f, 0f);
+				_forces[_gravityForce].Acceleration.Y = 0f;
+				_forces[_gravityForce].SetVelocity(0f, 0f, 0f);
 			}
-			var sourcePoint = new Vector3f(MapCamera.Position.X, MapCamera.Position.Y, MapCamera.Position.Z);
-			lock (Forces)
+			var sourcePoint = new Vector3F(_mapCamera.Position.X, _mapCamera.Position.Y, _mapCamera.Position.Z);
+			lock (_forces)
 			{
-				Forces.ApplyAllForces(sourcePoint, TimeElapsed);
+				_forces.ApplyAllForces(sourcePoint, _timeElapsed);
 			}
-			var projectedPos = sourcePoint - MapCamera.Position;
+			var projectedPos = sourcePoint - _mapCamera.Position;
 			if (!TryStepUpAndSlide(projectedPos))
 			{
-				TrySlide(MapCamera.Position, projectedPos);
+				TrySlide(_mapCamera.Position, projectedPos);
 			}
 		}
 
-		private delegate void CreateItemDelegate(int ID, ItemType IType, Vector3f Pos, bool Active);
+		private delegate void CreateItemDelegate(int id, ItemType type, Vector3F pos, bool active);
 
 		#region Utilizados en gluLookAt()
 
-		private static readonly Vector3f forward = new Vector3f();
-		private static Vector3f side = new Vector3f();
-		private static Vector3f up = new Vector3f();
-		private static readonly Matrix4f m = new Matrix4f();
+		private static readonly Vector3F Forward = new Vector3F();
+		private static Vector3F _side = new Vector3F();
+		private static Vector3F _up = new Vector3F();
+		private static readonly Matrix4F M = new Matrix4F();
 
 		#endregion Utilizados en gluLookAt()
 
@@ -1796,33 +1777,33 @@ namespace SnowflakeEngine.WanderEngine
 		/// <param name="upx"></param>
 		/// <param name="upy"></param>
 		/// <param name="upz"></param>
-		internal static void gluLookAt(float eyex, float eyey, float eyez,
+		internal static void GluLookAt(float eyex, float eyey, float eyez,
 			float centerx, float centery, float centerz,
 			float upx, float upy, float upz)
 		{
-			forward.X = centerx - eyex;
-			forward.Y = centery - eyey;
-			forward.Z = centerz - eyez;
+			Forward.X = centerx - eyex;
+			Forward.Y = centery - eyey;
+			Forward.Z = centerz - eyez;
 
-			up.X = upx;
-			up.Y = upy;
-			up.Z = upz;
+			_up.X = upx;
+			_up.Y = upy;
+			_up.Z = upz;
 
-			forward.Normalize();
+			Forward.Normalize();
 
 			/* Side = forward x up */
-			Vector3f.Cross(forward, up, ref side);
-			side.Normalize();
+			Vector3F.Cross(Forward, _up, ref _side);
+			_side.Normalize();
 
 			/* Recompute up as: up = side x forward */
-			Vector3f.Cross(side, forward, ref up);
+			Vector3F.Cross(_side, Forward, ref _up);
 
-			m.SetRight(side.X, up.X, -forward.X, 0);
-			m.SetUp(side.Y, up.Y, -forward.Y, 0);
-			m.SetForward(side.Z, up.Z, -forward.Z, 0);
-			m.SetTranslation(0, 0, 0, 1);
+			M.SetRight(_side.X, _up.X, -Forward.X, 0);
+			M.SetUp(_side.Y, _up.Y, -Forward.Y, 0);
+			M.SetForward(_side.Z, _up.Z, -Forward.Z, 0);
+			M.SetTranslation(0, 0, 0, 1);
 
-			GL.MultMatrix(m.values);
+			GL.MultMatrix(M.Values);
 			GL.Translate(-eyex, -eyey, -eyez);
 		}
 
@@ -1853,14 +1834,14 @@ namespace SnowflakeEngine.WanderEngine
 
 		#region projection-Perspective-Viewport
 
-		public void SetViewport(int Width, int Height)
+		public void SetViewport(int width, int height)
 		{
-			winWidth = Width;
-			winHeight = Height;
+			_winWidth = width;
+			_winHeight = height;
 
-			aspectRatio = Width/(double) Height;
+			_aspectRatio = width/(double) height;
 
-			GL.Viewport(0, 0, Width, Height);
+			GL.Viewport(0, 0, width, height);
 		}
 
 		public void SetProjection(ProjectionType proType)
@@ -1871,31 +1852,29 @@ namespace SnowflakeEngine.WanderEngine
 			switch (proType)
 			{
 				case ProjectionType.Perspective:
-					gluPerspective(fieldOfView, aspectRatio,
-						nearClipDistance, farClipDistance);
+					GluPerspective(_fieldOfView, _aspectRatio,
+						_nearClipDistance, _farClipDistance);
 					break;
 				case ProjectionType.Ortho2D:
-					gluOrtho2D(0, winWidth, winHeight, 0);
+					GluOrtho2D(0, _winWidth, _winHeight, 0);
 					break;
 			}
 			GL.MatrixMode(MatrixMode.Modelview);
 			GL.LoadIdentity();
 		}
 
-		internal void gluOrtho2D(double left, double right, double bottom, double top)
+		internal void GluOrtho2D(double left, double right, double bottom, double top)
 		{
 			GL.Ortho(left, right, bottom, top, -1.0, 1.0);
 		}
 
-		internal void gluPerspective(double fovy, double aspect, double zNear, double zFar)
+		internal void GluPerspective(double fovy, double aspect, double zNear, double zFar)
 		{
-			double xmin, xmax, ymin, ymax;
+		    var ymax = zNear*Math.Tan(fovy*Math.PI/360.0);
+			var ymin = -ymax;
 
-			ymax = zNear*Math.Tan(fovy*Math.PI/360.0);
-			ymin = -ymax;
-
-			xmin = ymin*aspect;
-			xmax = ymax*aspect;
+			var xmin = ymin*aspect;
+			var xmax = ymax*aspect;
 
 			GL.Frustum(xmin, xmax, ymin, ymax, zNear, zFar);
 		}

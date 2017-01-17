@@ -5,7 +5,7 @@ namespace BSP.Splash
 {
     public partial class SplashForm : Form
     {
-        private bool CloseSplashScreenFlag;
+        private bool _closeSplashScreenFlag;
 
         public SplashForm()
         {
@@ -34,7 +34,7 @@ namespace BSP.Splash
                 BeginInvoke(new SplashShowCloseDelegate(CloseSplashScreen));
                 return;
             }
-            CloseSplashScreenFlag = true;
+            _closeSplashScreenFlag = true;
             Close();
         }
 
@@ -50,25 +50,25 @@ namespace BSP.Splash
             progressBar1.Value = percentage;
         }
 
-        public void UdpateStatusText(string Text)
+        public void UdpateStatusText(string text)
         {
             if (InvokeRequired)
             {
                 // We're not in the UI thread, so we need to call BeginInvoke
-                BeginInvoke(new StringParameterDelegate(UdpateStatusText), Text);
+                BeginInvoke(new StringParameterDelegate(UdpateStatusText), text);
                 return;
             }
             // Must be on the UI thread if we've got this far
             label2.ForeColor = Color.Green;
-            label2.Text = Text;
+            label2.Text = text;
         }
 
-        public void UdpateStatusTextWithStatus(string Text, TypeOfMessage tom)
+        public void UdpateStatusTextWithStatus(string text, TypeOfMessage tom)
         {
             if (InvokeRequired)
             {
                 // We're not in the UI thread, so we need to call BeginInvoke
-                BeginInvoke(new StringParameterWithStatusDelegate(UdpateStatusTextWithStatus), Text, tom);
+                BeginInvoke(new StringParameterWithStatusDelegate(UdpateStatusTextWithStatus), text, tom);
                 return;
             }
             // Must be on the UI thread if we've got this far
@@ -84,18 +84,18 @@ namespace BSP.Splash
                     label2.ForeColor = Color.Green;
                     break;
             }
-            label2.Text = Text;
+            label2.Text = text;
         }
 
         private void SplashForm_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (CloseSplashScreenFlag == false)
+            if (_closeSplashScreenFlag == false)
                 e.Cancel = true;
         }
 
-        private delegate void StringParameterDelegate(string Text);
+        private delegate void StringParameterDelegate(string text);
 
-        private delegate void StringParameterWithStatusDelegate(string Text, TypeOfMessage tom);
+        private delegate void StringParameterWithStatusDelegate(string text, TypeOfMessage tom);
 
         private delegate void SplashShowCloseDelegate();
     }

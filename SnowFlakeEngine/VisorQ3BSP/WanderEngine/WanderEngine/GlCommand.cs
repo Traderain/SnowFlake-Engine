@@ -30,7 +30,7 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class GlCommand
     {
-        public Vector3f[] Commands = null;
+        public Vector3F[] Commands = null;
         public int CommandType = 5;
         public int NumCommands = -1;
     }

@@ -33,48 +33,48 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class Texture
     {
-        private readonly RotateFlipType rotateFlip = RotateFlipType.Rotate180FlipX;
+        private readonly RotateFlipType _rotateFlip = RotateFlipType.Rotate180FlipX;
         public int Height;
-        public int TextureID;
+        public int TextureId;
         public int Width;
 
-        public Texture(Bitmap ExistingImage)
+        public Texture(Bitmap existingImage)
         {
-            LoadBitmap(ExistingImage, false);
+            LoadBitmap(existingImage, false);
         }
 
-        public Texture(string FileName)
-            : this(FileName, RotateFlipType.Rotate180FlipX)
+        public Texture(string fileName)
+            : this(fileName, RotateFlipType.Rotate180FlipX)
         {
         }
 
-        public Texture(string FileName, RotateFlipType pRotateFlip)
+        public Texture(string fileName, RotateFlipType pRotateFlip)
         {
-            rotateFlip = pRotateFlip;
-            var currentImage = new Bitmap(FileName);
+            _rotateFlip = pRotateFlip;
+            var currentImage = new Bitmap(fileName);
             LoadBitmap(currentImage, false);
             currentImage.Dispose();
         }
 
-        public Texture(string FileName, bool IsSkyBox)
+        public Texture(string fileName, bool isSkyBox)
         {
-            var currentImage = new Bitmap(FileName);
-            LoadBitmap(currentImage, IsSkyBox);
+            var currentImage = new Bitmap(fileName);
+            LoadBitmap(currentImage, isSkyBox);
             currentImage.Dispose();
         }
 
-        private void LoadBitmap(Bitmap CurrentImage, bool IsSkyBox)
+        private void LoadBitmap(Bitmap currentImage, bool isSkyBox)
         {
-            Width = CurrentImage.Width;
-            Height = CurrentImage.Height;
-            CurrentImage.RotateFlip(rotateFlip);
+            Width = currentImage.Width;
+            Height = currentImage.Height;
+            currentImage.RotateFlip(_rotateFlip);
             var rect = new Rectangle(0, 0, Width, Height);
-            var bitmapdata = CurrentImage.LockBits(rect, ImageLockMode.ReadOnly,
+            var bitmapdata = currentImage.LockBits(rect, ImageLockMode.ReadOnly,
                 PixelFormat.Format24bppRgb);
-            TextureID = -1;
-            GL.GenTextures(1, out TextureID);
-            GL.BindTexture(TextureTarget.Texture2D, TextureID);
-            if (IsSkyBox)
+            TextureId = -1;
+            GL.GenTextures(1, out TextureId);
+            GL.BindTexture(TextureTarget.Texture2D, TextureId);
+            if (isSkyBox)
             {
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS,
                     (int) TextureWrapMode.ClampToEdge);
@@ -97,7 +97,7 @@ namespace SnowflakeEngine.WanderEngine
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.GenerateMipmap, 1); // 1 = True
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgb, Width, Height, 0,
                 OpenTK.Graphics.OpenGL.PixelFormat.Bgr, PixelType.UnsignedByte, bitmapdata.Scan0);
-            CurrentImage.UnlockBits(bitmapdata);
+            currentImage.UnlockBits(bitmapdata);
         }
     }
 }

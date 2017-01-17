@@ -31,9 +31,9 @@ namespace SnowflakeEngine.WanderEngine
     public class CollisionInformation
     {
         public bool AllSolid = false;
-        public Vector3f EndPoint = new Vector3f();
+        public Vector3F EndPoint = new Vector3F();
         public float Fraction = 1f;
-        public Vector3f Normal = new Vector3f();
+        public Vector3F Normal = new Vector3F();
         public float PlaneDistance = 0f;
         public bool StartsOut = true;
     }

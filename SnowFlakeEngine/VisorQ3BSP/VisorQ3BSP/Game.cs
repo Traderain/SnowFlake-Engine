@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BSP.Splash;
 using OpenTK;
@@ -16,25 +15,25 @@ namespace BSP
 {
 	internal class DebugWindow
 	{
-		public enum msgtype
+		public enum Msgtype
 		{
-			engine,
-			game,
-			error
+			Engine,
+			Game,
+			Error
 		}
 
-		public static void Log(string msg,msgtype type = msgtype.engine)
+		public static void Log(string msg, Msgtype type = Msgtype.Engine)
 		{
 #if DEBUG
 			switch (type)
 			{
-				case msgtype.engine:
+				case Msgtype.Engine:
 					Console.ForegroundColor = ConsoleColor.DarkGreen;
 					break;
-				case msgtype.game:
+				case Msgtype.Game:
 					Console.ForegroundColor = ConsoleColor.White;
 					break;
-				case msgtype.error:
+				case Msgtype.Error:
 					Console.ForegroundColor = ConsoleColor.Red;
 					break;
 			}
@@ -42,20 +41,15 @@ namespace BSP
 #endif
 		}
 	}
+
 	public class Game : GameWindow
 	{
-		private readonly Engine SEngine;
-		protected Color clearColor = Color.Black;
-		//protected ProjectionType typeProjection = ProjectionType.Perspective;
-		protected ClearBufferMask maskClearBuffer = ClearBufferMask.ColorBufferBit;
-		private SplashForm sf = new SplashForm();
 		public static List<DebugMessage> DebugMessages = new List<DebugMessage>();
-
-		public struct DebugMessage
-		{
-			public ConsoleColor color;
-			public string msg;
-		}
+		private readonly Engine _sEngine;
+		private SplashForm _sf = new SplashForm();
+		protected Color ClearColor = Color.Black;
+		//protected ProjectionType typeProjection = ProjectionType.Perspective;
+		protected ClearBufferMask MaskClearBuffer = ClearBufferMask.ColorBufferBit;
 
 		#region Constructor
 
@@ -66,7 +60,7 @@ namespace BSP
 				Title = "SnowFlake Engine";
 				VSync = VSyncMode.Off;
 				DebugWindow.Log("VSync: " + VSync);
-				SEngine = new Engine(this);
+				_sEngine = new Engine(this);
 
 				var splashthread = new Thread(SplashScreen.ShowSplashScreen) {IsBackground = true};
 				splashthread.Start();
@@ -74,7 +68,7 @@ namespace BSP
 				SplashScreen.UdpateStatusTextWithStatus("Loading BSP map: level.bsp", TypeOfMessage.Success);
 				DebugWindow.Log("Loading level outpost.bsp");
 				SplashScreen.UpdatePercentage(20);
-				SEngine.LoadMap(Engine.Quake3FilesPath + Utility.AdaptRelativePathToPlatform("maps/"), "outpost.bsp");
+				_sEngine.LoadMap(Engine.Quake3FilesPath + Utility.AdaptRelativePathToPlatform("maps/"), "outpost.bsp");
 				DebugWindow.Log("Loaded map outpost.bsp");
 				SplashScreen.UpdatePercentage(60);
 				SplashScreen.UpdatePercentage(90);
@@ -94,8 +88,8 @@ namespace BSP
 
 			if (Width != 0 && Height != 0)
 			{
-				SEngine.SetViewport(Width, Height);
-				SEngine.SetProjection(ProjectionType.Perspective);
+				_sEngine.SetViewport(Width, Height);
+				_sEngine.SetProjection(ProjectionType.Perspective);
 			}
 		}
 
@@ -131,7 +125,7 @@ namespace BSP
 				}
 #endif
 #if !DEBUG
-			   this.Exit();
+				Exit();
 #endif
 			}
 		}
@@ -142,7 +136,7 @@ namespace BSP
 #if DEBUG
 			Title = "FPS: " + (1 / e.Time).ToString("F1");
 #endif
-			SEngine?.UpdateFrame((float) e.Time);
+			_sEngine?.UpdateFrame((float) e.Time);
 
 			SwapBuffers();
 		}
@@ -151,14 +145,16 @@ namespace BSP
 		{
 			base.OnUnload(e);
 
-			SEngine?.DestroyAll();
+			_sEngine?.DestroyAll();
 		}
 
 		[STAThread]
 		public static void Main(string[] args)
 		{
+#if DEBUG
 			AllocConsole();
 			Console.Title = (@"SNOWFLAKE ENGINE DEBUG CONSOLE");
+#endif
 			DebugWindow.Log("Starting");
 			Engine.Quake3FilesPath = Utility.AdaptRelativePathToPlatform("../../../../media/Quake3/");
 			DebugWindow.Log("Starting new game!");
@@ -170,6 +166,12 @@ namespace BSP
 
 		[DllImport("kernel32.dll", SetLastError = true)]
 		[return: MarshalAs(UnmanagedType.Bool)]
-		static extern bool AllocConsole();
+		public static extern bool AllocConsole();
+
+		public struct DebugMessage
+		{
+			public ConsoleColor Color;
+			public string Msg;
+		}
 	}
 }

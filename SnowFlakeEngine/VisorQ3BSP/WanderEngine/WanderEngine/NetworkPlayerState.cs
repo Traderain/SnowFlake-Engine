@@ -41,16 +41,16 @@ namespace SnowflakeEngine.WanderEngine
             Yaw = 0f;
         }
 
-        public NetworkPlayerState(float X, float Y, float Z, float Yaw)
+        public NetworkPlayerState(float x, float y, float z, float yaw)
         {
-            this.X = 0f;
-            this.Y = 0f;
-            this.Z = 0f;
-            this.Yaw = 0f;
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
-            this.Yaw = Yaw;
+            X = 0f;
+            Y = 0f;
+            Z = 0f;
+            Yaw = 0f;
+            X = x;
+            Y = y;
+            Z = z;
+            Yaw = yaw;
         }
     }
 }

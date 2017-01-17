@@ -31,246 +31,249 @@ using OpenTK.Graphics.OpenGL;
 
 namespace SnowflakeEngine.WanderEngine
 {
-    public class MD2Model
+    public class Md2Model
     {
         private static readonly int HeaderSizeInBytes = 0x44;
         private static readonly int SkinNameSizeInBytes = 0x40;
-        private int AnimEndFrame = 0x27;
-        private float AnimPercent = 4f;
-        private int AnimStartFrame;
-        private int CurrentFrame;
-        private MD2Face[] Faces;
-        private MD2Frame[] Frames;
+        private int _animEndFrame = 0x27;
+        private float _animPercent = 4f;
+        private int _animStartFrame;
+        private int _currentFrame;
+        private Md2Face[] _faces;
+        private Md2Frame[] _frames;
         //private GlCommand[] GlCommands = null;
-        private MD2Header Header;
-        private float Interpolation;
-        private AnimationState m_ModelState = AnimationState.Stand;
-        private float MaskB;
-        private float MaskG;
-        private float MaskR;
-        private Texture ModelTexture;
-        private int NextFrame;
-        private int NumFaces;
-        private int NumFramePoints;
-        private int NumFrames;
-        private int NumSkins;
-        private int NumTextureCoords;
-        private int NumVertices;
+        private Md2Header _header;
+        private float _interpolation;
+        private float _maskB;
+        private float _maskG;
+        private float _maskR;
+        private AnimationState _mModelState = AnimationState.Stand;
+        private Texture _modelTexture;
+        private int _nextFrame;
+        private int _numFaces;
+        private int _numFramePoints;
+        private int _numFrames;
+        private int _numSkins;
+        private int _numTextureCoords;
+        private int _numVertices;
+        private int _pointsPerFrame;
+        private string[] _skins;
+        private Vector2F[] _textureCoords;
+        private bool _useMask;
+        private Vector3F[] _vertices;
         public float Pitch = 0f;
-        private int PointsPerFrame;
-        public Vector3f Position = new Vector3f();
+        public Vector3F Position = new Vector3F();
         public bool RepeatAnimation = true;
-        private string[] Skins;
-        private Vector2f[] TextureCoords;
-        private bool UseMask;
-        private Vector3f[] Vertices;
         public float Yaw = 0f;
 
-        public MD2Model(string FileName, string TextureFileName)
+        public Md2Model(string fileName, string textureFileName)
         {
-            LoadModel(FileName, TextureFileName);
+            LoadModel(fileName, textureFileName);
         }
 
-        public Vector3f BoundMax { get; } = new Vector3f();
-        public Vector3f BoundMin { get; } = new Vector3f();
-        public Vector3f Center { get; } = new Vector3f();
+        public Vector3F BoundMax { get; } = new Vector3F();
+        public Vector3F BoundMin { get; } = new Vector3F();
+        public Vector3F Center { get; } = new Vector3F();
 
         public AnimationState ModelState
         {
-            get { return m_ModelState; }
+            get { return _mModelState; }
             set { SetModelState(value); }
         }
 
-        public void Animate(int StartFrame, int EndFrame, float Percent)
+        public void Animate(int startFrame, int endFrame, float percent)
         {
-            if (StartFrame > CurrentFrame)
+            if (startFrame > _currentFrame)
             {
-                CurrentFrame = StartFrame;
+                _currentFrame = startFrame;
             }
-            if (Interpolation > 1f)
+            if (_interpolation > 1f)
             {
-                Interpolation = 0f;
-                CurrentFrame++;
+                _interpolation = 0f;
+                _currentFrame++;
                 if (RepeatAnimation)
                 {
-                    if (CurrentFrame >= EndFrame)
+                    if (_currentFrame >= endFrame)
                     {
-                        CurrentFrame = StartFrame;
+                        _currentFrame = startFrame;
                     }
-                    NextFrame = CurrentFrame + 1;
-                    if (NextFrame >= EndFrame)
+                    _nextFrame = _currentFrame + 1;
+                    if (_nextFrame >= endFrame)
                     {
-                        NextFrame = StartFrame;
+                        _nextFrame = startFrame;
                     }
                 }
-                else if (CurrentFrame >= AnimEndFrame)
+                else if (_currentFrame >= _animEndFrame)
                 {
-                    CurrentFrame = AnimEndFrame;
-                    NextFrame = CurrentFrame;
+                    _currentFrame = _animEndFrame;
+                    _nextFrame = _currentFrame;
                 }
                 else
                 {
-                    NextFrame = CurrentFrame + 1;
+                    _nextFrame = _currentFrame + 1;
                 }
             }
-            var num = CurrentFrame*Header.NumPoints;
-            var num2 = NextFrame*Header.NumPoints;
+            var num = _currentFrame*_header.NumPoints;
+            var num2 = _nextFrame*_header.NumPoints;
             GL.PushMatrix();
             GL.Translate(Position.X, Position.Y, Position.Z);
             GL.Rotate(Yaw, 0f, 1f, 0f);
             GL.Rotate(Pitch, 0f, 0f, 1f);
-            if (UseMask)
+            if (_useMask)
             {
                 GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (int) TextureEnvMode.Modulate);
-                GL.Color4(MaskR, MaskG, MaskB, 0.9f);
+                GL.Color4(_maskR, _maskG, _maskB, 0.9f);
             }
             GL.CullFace(CullFaceMode.Back);
-            GL.BindTexture(TextureTarget.Texture2D, ModelTexture.TextureID);
+            GL.BindTexture(TextureTarget.Texture2D, _modelTexture.TextureId);
             GL.Begin(BeginMode.Triangles);
-            for (var i = 0; i < NumFaces; i++)
+            for (var i = 0; i < _numFaces; i++)
             {
-                var vector = Vertices[num + Faces[i].VertexIndices[0]];
-                var vector2 = Vertices[num + Faces[i].VertexIndices[2]];
-                var vector3 = Vertices[num + Faces[i].VertexIndices[1]];
-                var vector4 = Vertices[num2 + Faces[i].VertexIndices[0]];
-                var vector5 = Vertices[num2 + Faces[i].VertexIndices[2]];
-                var vector6 = Vertices[num2 + Faces[i].VertexIndices[1]];
-                var vector7 = new Vector3f
+                var vector = _vertices[num + _faces[i].VertexIndices[0]];
+                var vector2 = _vertices[num + _faces[i].VertexIndices[2]];
+                var vector3 = _vertices[num + _faces[i].VertexIndices[1]];
+                var vector4 = _vertices[num2 + _faces[i].VertexIndices[0]];
+                var vector5 = _vertices[num2 + _faces[i].VertexIndices[2]];
+                var vector6 = _vertices[num2 + _faces[i].VertexIndices[1]];
+                var vector7 = new Vector3F
                 {
-                    X = vector.X + (Interpolation*(vector4.X - vector.X)),
-                    Y = vector.Y + (Interpolation*(vector4.Y - vector.Y)),
-                    Z = vector.Z + (Interpolation*(vector4.Z - vector.Z))
+                    X = vector.X + (_interpolation*(vector4.X - vector.X)),
+                    Y = vector.Y + (_interpolation*(vector4.Y - vector.Y)),
+                    Z = vector.Z + (_interpolation*(vector4.Z - vector.Z))
                 };
-                GL.TexCoord2(TextureCoords[Faces[i].TextureIndices[0]].X, TextureCoords[Faces[i].TextureIndices[0]].Y);
+                GL.TexCoord2(_textureCoords[_faces[i].TextureIndices[0]].X,
+                    _textureCoords[_faces[i].TextureIndices[0]].Y);
                 GL.Vertex3(vector7.X, vector7.Y, vector7.Z);
-                var vector8 = new Vector3f
+                var vector8 = new Vector3F
                 {
-                    X = vector2.X + (Interpolation*(vector5.X - vector2.X)),
-                    Y = vector2.Y + (Interpolation*(vector5.Y - vector2.Y)),
-                    Z = vector2.Z + (Interpolation*(vector5.Z - vector2.Z))
+                    X = vector2.X + (_interpolation*(vector5.X - vector2.X)),
+                    Y = vector2.Y + (_interpolation*(vector5.Y - vector2.Y)),
+                    Z = vector2.Z + (_interpolation*(vector5.Z - vector2.Z))
                 };
-                GL.TexCoord2(TextureCoords[Faces[i].TextureIndices[2]].X, TextureCoords[Faces[i].TextureIndices[2]].Y);
+                GL.TexCoord2(_textureCoords[_faces[i].TextureIndices[2]].X,
+                    _textureCoords[_faces[i].TextureIndices[2]].Y);
                 GL.Vertex3(vector8.X, vector8.Y, vector8.Z);
-                var vector9 = new Vector3f
+                var vector9 = new Vector3F
                 {
-                    X = vector3.X + (Interpolation*(vector6.X - vector3.X)),
-                    Y = vector3.Y + (Interpolation*(vector6.Y - vector3.Y)),
-                    Z = vector3.Z + (Interpolation*(vector6.Z - vector3.Z))
+                    X = vector3.X + (_interpolation*(vector6.X - vector3.X)),
+                    Y = vector3.Y + (_interpolation*(vector6.Y - vector3.Y)),
+                    Z = vector3.Z + (_interpolation*(vector6.Z - vector3.Z))
                 };
-                GL.TexCoord2(TextureCoords[Faces[i].TextureIndices[1]].X, TextureCoords[Faces[i].TextureIndices[1]].Y);
+                GL.TexCoord2(_textureCoords[_faces[i].TextureIndices[1]].X,
+                    _textureCoords[_faces[i].TextureIndices[1]].Y);
                 GL.Vertex3(vector9.X, vector9.Y, vector9.Z);
             }
             GL.End();
             GL.CullFace(CullFaceMode.Front);
             GL.PopMatrix();
-            if (UseMask)
+            if (_useMask)
             {
                 GL.TexEnv(TextureEnvTarget.TextureEnv, TextureEnvParameter.TextureEnvMode, (int) TextureEnvMode.Replace);
             }
-            Interpolation += Percent;
+            _interpolation += percent;
         }
 
-        private void LoadModel(string FileName, string TextureFileName)
+        private void LoadModel(string fileName, string textureFileName)
         {
-            var reader = new BinaryReader(new FileStream(FileName, FileMode.Open, FileAccess.Read));
+            var reader = new BinaryReader(new FileStream(fileName, FileMode.Open, FileAccess.Read));
             var headerBytes = reader.ReadBytes(HeaderSizeInBytes);
-            Header = new MD2Header(headerBytes);
-            NumSkins = Header.NumSkins;
-            Skins = new string[NumSkins];
-            NumFaces = Header.NumTriangles;
-            Faces = new MD2Face[NumFaces];
-            NumFrames = Header.NumFrames;
-            NumFramePoints = Header.NumPoints;
-            PointsPerFrame = Header.NumTriangles*3;
-            Frames = new MD2Frame[NumFrames];
-            NumTextureCoords = Header.NumTextureCoords;
-            TextureCoords = new Vector2f[NumTextureCoords];
-            NumVertices = Header.NumFrames*Header.NumPoints;
-            Vertices = new Vector3f[NumVertices];
-            reader.BaseStream.Seek(Header.SkinsOffset, SeekOrigin.Begin);
-            for (var i = 0; i < NumSkins; i++)
+            _header = new Md2Header(headerBytes);
+            _numSkins = _header.NumSkins;
+            _skins = new string[_numSkins];
+            _numFaces = _header.NumTriangles;
+            _faces = new Md2Face[_numFaces];
+            _numFrames = _header.NumFrames;
+            _numFramePoints = _header.NumPoints;
+            _pointsPerFrame = _header.NumTriangles*3;
+            _frames = new Md2Frame[_numFrames];
+            _numTextureCoords = _header.NumTextureCoords;
+            _textureCoords = new Vector2F[_numTextureCoords];
+            _numVertices = _header.NumFrames*_header.NumPoints;
+            _vertices = new Vector3F[_numVertices];
+            reader.BaseStream.Seek(_header.SkinsOffset, SeekOrigin.Begin);
+            for (var i = 0; i < _numSkins; i++)
             {
                 var stringData = reader.ReadBytes(SkinNameSizeInBytes);
-                Skins[i] = ParseString(stringData);
+                _skins[i] = ParseString(stringData);
             }
-            ModelTexture = new Texture(TextureFileName);
-            reader.BaseStream.Seek(Header.TextureCoordsOffset, SeekOrigin.Begin);
-            for (var j = 0; j < NumTextureCoords; j++)
+            _modelTexture = new Texture(textureFileName);
+            reader.BaseStream.Seek(_header.TextureCoordsOffset, SeekOrigin.Begin);
+            for (var j = 0; j < _numTextureCoords; j++)
             {
-                TextureCoords[j] = new Vector2f();
+                _textureCoords[j] = new Vector2F();
                 var num3 = reader.ReadInt16();
                 var num4 = reader.ReadInt16();
-                TextureCoords[j].X = num3/((float) Header.SkinWidth);
-                TextureCoords[j].Y = -(num4/((float) Header.SkinHeight));
+                _textureCoords[j].X = num3/((float) _header.SkinWidth);
+                _textureCoords[j].Y = -(num4/((float) _header.SkinHeight));
             }
-            reader.BaseStream.Seek(Header.TrianglesOffset, SeekOrigin.Begin);
-            for (var k = 0; k < NumFaces; k++)
+            reader.BaseStream.Seek(_header.TrianglesOffset, SeekOrigin.Begin);
+            for (var k = 0; k < _numFaces; k++)
             {
-                var reader2 = new BinaryReader(new MemoryStream(reader.ReadBytes(MD2Face.SizeInBytes)));
-                Faces[k] = new MD2Face();
-                Faces[k].VertexIndices[0] = reader2.ReadInt16();
-                Faces[k].VertexIndices[1] = reader2.ReadInt16();
-                Faces[k].VertexIndices[2] = reader2.ReadInt16();
-                Faces[k].TextureIndices[0] = reader2.ReadInt16();
-                Faces[k].TextureIndices[1] = reader2.ReadInt16();
-                Faces[k].TextureIndices[2] = reader2.ReadInt16();
+                var reader2 = new BinaryReader(new MemoryStream(reader.ReadBytes(Md2Face.SizeInBytes)));
+                _faces[k] = new Md2Face();
+                _faces[k].VertexIndices[0] = reader2.ReadInt16();
+                _faces[k].VertexIndices[1] = reader2.ReadInt16();
+                _faces[k].VertexIndices[2] = reader2.ReadInt16();
+                _faces[k].TextureIndices[0] = reader2.ReadInt16();
+                _faces[k].TextureIndices[1] = reader2.ReadInt16();
+                _faces[k].TextureIndices[2] = reader2.ReadInt16();
             }
-            reader.BaseStream.Seek(Header.FramesOffset, SeekOrigin.Begin);
-            for (var m = 0; m < NumFrames; m++)
+            reader.BaseStream.Seek(_header.FramesOffset, SeekOrigin.Begin);
+            for (var m = 0; m < _numFrames; m++)
             {
-                Frames[m] = new MD2Frame();
-                Frames[m].FramePoints = new MD2FramePoint[Header.NumPoints];
-                Frames[m].Scale.X = reader.ReadSingle();
-                Frames[m].Scale.Y = reader.ReadSingle();
-                Frames[m].Scale.Z = reader.ReadSingle();
-                Frames[m].Translate.X = reader.ReadSingle();
-                Frames[m].Translate.Y = reader.ReadSingle();
-                Frames[m].Translate.Z = reader.ReadSingle();
-                Frames[m].Name = ParseString(reader.ReadBytes(0x10));
-                for (var num7 = 0; num7 < NumFramePoints; num7++)
+                _frames[m] = new Md2Frame();
+                _frames[m].FramePoints = new Md2FramePoint[_header.NumPoints];
+                _frames[m].Scale.X = reader.ReadSingle();
+                _frames[m].Scale.Y = reader.ReadSingle();
+                _frames[m].Scale.Z = reader.ReadSingle();
+                _frames[m].Translate.X = reader.ReadSingle();
+                _frames[m].Translate.Y = reader.ReadSingle();
+                _frames[m].Translate.Z = reader.ReadSingle();
+                _frames[m].Name = ParseString(reader.ReadBytes(0x10));
+                for (var num7 = 0; num7 < _numFramePoints; num7++)
                 {
-                    Frames[m].FramePoints[num7] = new MD2FramePoint();
-                    Frames[m].FramePoints[num7].ScaledVertex[0] = reader.ReadByte();
-                    Frames[m].FramePoints[num7].ScaledVertex[1] = reader.ReadByte();
-                    Frames[m].FramePoints[num7].ScaledVertex[2] = reader.ReadByte();
-                    Frames[m].FramePoints[num7].LightNormalIndex = reader.ReadByte();
+                    _frames[m].FramePoints[num7] = new Md2FramePoint();
+                    _frames[m].FramePoints[num7].ScaledVertex[0] = reader.ReadByte();
+                    _frames[m].FramePoints[num7].ScaledVertex[1] = reader.ReadByte();
+                    _frames[m].FramePoints[num7].ScaledVertex[2] = reader.ReadByte();
+                    _frames[m].FramePoints[num7].LightNormalIndex = reader.ReadByte();
                 }
             }
             var index = 0;
-            for (var n = 0; n < NumFrames; n++)
+            for (var n = 0; n < _numFrames; n++)
             {
-                for (var num10 = 0; num10 < NumFramePoints; num10++)
+                for (var num10 = 0; num10 < _numFramePoints; num10++)
                 {
-                    Vertices[index] = new Vector3f();
-                    Vertices[index].X = (Frames[n].FramePoints[num10].ScaledVertex[0]*Frames[n].Scale.X) +
-                                        Frames[n].Translate.X;
-                    Vertices[index].Z =
-                        -((Frames[n].FramePoints[num10].ScaledVertex[1]*Frames[n].Scale.Y) + Frames[n].Translate.Y);
-                    Vertices[index].Y = (Frames[n].FramePoints[num10].ScaledVertex[2]*Frames[n].Scale.Z) +
-                                        Frames[n].Translate.Z;
-                    if (Vertices[index].X < BoundMin.X)
+                    _vertices[index] = new Vector3F();
+                    _vertices[index].X = (_frames[n].FramePoints[num10].ScaledVertex[0]*_frames[n].Scale.X) +
+                                         _frames[n].Translate.X;
+                    _vertices[index].Z =
+                        -((_frames[n].FramePoints[num10].ScaledVertex[1]*_frames[n].Scale.Y) + _frames[n].Translate.Y);
+                    _vertices[index].Y = (_frames[n].FramePoints[num10].ScaledVertex[2]*_frames[n].Scale.Z) +
+                                         _frames[n].Translate.Z;
+                    if (_vertices[index].X < BoundMin.X)
                     {
-                        BoundMin.X = Vertices[index].X;
+                        BoundMin.X = _vertices[index].X;
                     }
-                    if (Vertices[index].Y < BoundMin.Y)
+                    if (_vertices[index].Y < BoundMin.Y)
                     {
-                        BoundMin.Y = Vertices[index].Y;
+                        BoundMin.Y = _vertices[index].Y;
                     }
-                    if (Vertices[index].Z < BoundMin.Z)
+                    if (_vertices[index].Z < BoundMin.Z)
                     {
-                        BoundMin.Z = Vertices[index].Z;
+                        BoundMin.Z = _vertices[index].Z;
                     }
-                    if (Vertices[index].X > BoundMax.X)
+                    if (_vertices[index].X > BoundMax.X)
                     {
-                        BoundMax.X = Vertices[index].X;
+                        BoundMax.X = _vertices[index].X;
                     }
-                    if (Vertices[index].Y > BoundMax.Y)
+                    if (_vertices[index].Y > BoundMax.Y)
                     {
-                        BoundMax.Y = Vertices[index].Y;
+                        BoundMax.Y = _vertices[index].Y;
                     }
-                    if (Vertices[index].Z > BoundMax.Z)
+                    if (_vertices[index].Z > BoundMax.Z)
                     {
-                        BoundMax.Z = Vertices[index].Z;
+                        BoundMax.Z = _vertices[index].Z;
                     }
                     index++;
                 }
@@ -281,206 +284,206 @@ namespace SnowflakeEngine.WanderEngine
             reader.Close();
         }
 
-        private string ParseString(byte[] StringData)
+        private string ParseString(byte[] stringData)
         {
             var str = "";
-            for (var i = 0; i < StringData.Length; i++)
+            for (var i = 0; i < stringData.Length; i++)
             {
-                if (StringData[i] != 0)
+                if (stringData[i] != 0)
                 {
-                    str = str + Convert.ToChar(StringData[i]);
+                    str = str + Convert.ToChar(stringData[i]);
                 }
             }
             return str;
         }
 
-        public bool RayCollides(Vector3f Start, Vector3f End)
+        public bool RayCollides(Vector3F start, Vector3F end)
         {
-            return BSPFile.RayBoxCollision(Start, End, BoundMin + Position, BoundMax + Position);
+            return BspFile.RayBoxCollision(start, end, BoundMin + Position, BoundMax + Position);
         }
 
-        private void SetModelState(AnimationState NewState)
+        private void SetModelState(AnimationState newState)
         {
-            m_ModelState = NewState;
-            switch (NewState)
+            _mModelState = newState;
+            switch (newState)
             {
                 case AnimationState.Stand:
-                    AnimStartFrame = 0;
-                    AnimEndFrame = 30;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0;
+                    _animEndFrame = 30;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Run:
-                    AnimStartFrame = 40;
-                    AnimEndFrame = 0x2d;
-                    AnimPercent = 4f;
+                    _animStartFrame = 40;
+                    _animEndFrame = 0x2d;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Attack:
-                    AnimStartFrame = 0x2e;
-                    AnimEndFrame = 0x35;
-                    AnimPercent = 0.5f;
+                    _animStartFrame = 0x2e;
+                    _animEndFrame = 0x35;
+                    _animPercent = 0.5f;
                     break;
 
                 case AnimationState.PainA:
-                    AnimStartFrame = 0x36;
-                    AnimEndFrame = 0x39;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x36;
+                    _animEndFrame = 0x39;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.PainB:
-                    AnimStartFrame = 0x3a;
-                    AnimEndFrame = 0x3d;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x3a;
+                    _animEndFrame = 0x3d;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.PainC:
-                    AnimStartFrame = 0x3e;
-                    AnimEndFrame = 0x41;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x3e;
+                    _animEndFrame = 0x41;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Jump:
-                    AnimStartFrame = 0x42;
-                    AnimEndFrame = 0x47;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x42;
+                    _animEndFrame = 0x47;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Flip:
-                    AnimStartFrame = 0x48;
-                    AnimEndFrame = 0x53;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x48;
+                    _animEndFrame = 0x53;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Salute:
-                    AnimStartFrame = 0x54;
-                    AnimEndFrame = 0x5e;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x54;
+                    _animEndFrame = 0x5e;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.FallBack:
-                    AnimStartFrame = 0x5f;
-                    AnimEndFrame = 0x6f;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x5f;
+                    _animEndFrame = 0x6f;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Wave:
-                    AnimStartFrame = 0x70;
-                    AnimEndFrame = 0x7a;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x70;
+                    _animEndFrame = 0x7a;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Point:
-                    AnimStartFrame = 0x7b;
-                    AnimEndFrame = 0x86;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x7b;
+                    _animEndFrame = 0x86;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.CrouchStand:
-                    AnimStartFrame = 0x87;
-                    AnimEndFrame = 0x99;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x87;
+                    _animEndFrame = 0x99;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.CrouchWalk:
-                    AnimStartFrame = 0x9a;
-                    AnimEndFrame = 0x9f;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0x9a;
+                    _animEndFrame = 0x9f;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.CrouchAttack:
-                    AnimStartFrame = 160;
-                    AnimEndFrame = 0xa8;
-                    AnimPercent = 4f;
+                    _animStartFrame = 160;
+                    _animEndFrame = 0xa8;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.CrouchPain:
-                    AnimStartFrame = 0xa9;
-                    AnimEndFrame = 0xac;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0xa9;
+                    _animEndFrame = 0xac;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.CrouchDeath:
-                    AnimStartFrame = 0xad;
-                    AnimEndFrame = 0xb1;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0xad;
+                    _animEndFrame = 0xb1;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.DeathFallBack:
-                    AnimStartFrame = 0xb2;
-                    AnimEndFrame = 0xb7;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0xb2;
+                    _animEndFrame = 0xb7;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.DeathFallFoward:
-                    AnimStartFrame = 0xb8;
-                    AnimEndFrame = 0xbd;
-                    AnimPercent = 3f;
+                    _animStartFrame = 0xb8;
+                    _animEndFrame = 0xbd;
+                    _animPercent = 3f;
                     break;
 
                 case AnimationState.DeathFallBackSlow:
-                    AnimStartFrame = 190;
-                    AnimEndFrame = 0xc5;
-                    AnimPercent = 4f;
+                    _animStartFrame = 190;
+                    _animEndFrame = 0xc5;
+                    _animPercent = 4f;
                     break;
 
                 case AnimationState.Boom:
-                    AnimStartFrame = 0xc6;
-                    AnimEndFrame = 0xc6;
-                    AnimPercent = 4f;
+                    _animStartFrame = 0xc6;
+                    _animEndFrame = 0xc6;
+                    _animPercent = 4f;
                     break;
             }
-            CurrentFrame = AnimStartFrame;
-            NextFrame = CurrentFrame + 1;
-            Interpolation = 0f;
+            _currentFrame = _animStartFrame;
+            _nextFrame = _currentFrame + 1;
+            _interpolation = 0f;
         }
 
-        public void Update(float TimeElapsed)
+        public void Update(float timeElapsed)
         {
-            UseMask = false;
-            Animate(AnimStartFrame, AnimEndFrame, AnimPercent*TimeElapsed);
+            _useMask = false;
+            Animate(_animStartFrame, _animEndFrame, _animPercent*timeElapsed);
         }
 
-        public void Update(float TimeElapsed, float R, float G, float B)
+        public void Update(float timeElapsed, float r, float g, float b)
         {
-            UseMask = true;
-            MaskR = R;
-            MaskG = G;
-            MaskB = B;
-            Animate(AnimStartFrame, AnimEndFrame, AnimPercent*TimeElapsed);
+            _useMask = true;
+            _maskR = r;
+            _maskG = g;
+            _maskB = b;
+            Animate(_animStartFrame, _animEndFrame, _animPercent*timeElapsed);
         }
     }
 
-    public class MD2Face
+    public class Md2Face
     {
         public static readonly int SizeInBytes = 12;
         public short[] TextureIndices = new short[3];
         public short[] VertexIndices = new short[3];
     }
 
-    public class MD2Frame
+    public class Md2Frame
     {
-        public MD2FramePoint[] FramePoints;
+        public Md2FramePoint[] FramePoints;
         public string Name = "";
-        public Vector3f Scale = new Vector3f();
-        public Vector3f Translate = new Vector3f();
+        public Vector3F Scale = new Vector3F();
+        public Vector3F Translate = new Vector3F();
     }
 
-    public class MD2FramePoint
+    public class Md2FramePoint
     {
         public byte LightNormalIndex;
         public byte[] ScaledVertex = new byte[3];
     }
 
-    public class MD2Header
+    public class Md2Header
     {
         public int EndOffset;
         public int FrameSize;
         public int FramesOffset;
-        public int GLCommandsOffset;
+        public int GlCommandsOffset;
         public int Identity;
         public int NumFrames;
-        public int NumGLCommands;
+        public int NumGlCommands;
         public int NumPoints;
         public int NumSkins;
         public int NumTextureCoords;
@@ -492,13 +495,13 @@ namespace SnowflakeEngine.WanderEngine
         public int TrianglesOffset;
         public int Version;
 
-        public MD2Header()
+        public Md2Header()
         {
         }
 
-        public MD2Header(byte[] HeaderBytes)
+        public Md2Header(byte[] headerBytes)
         {
-            var reader = new BinaryReader(new MemoryStream(HeaderBytes));
+            var reader = new BinaryReader(new MemoryStream(headerBytes));
             Identity = reader.ReadInt32();
             Version = reader.ReadInt32();
             if (Version != 8)
@@ -512,13 +515,13 @@ namespace SnowflakeEngine.WanderEngine
             NumPoints = reader.ReadInt32();
             NumTextureCoords = reader.ReadInt32();
             NumTriangles = reader.ReadInt32();
-            NumGLCommands = reader.ReadInt32();
+            NumGlCommands = reader.ReadInt32();
             NumFrames = reader.ReadInt32();
             SkinsOffset = reader.ReadInt32();
             TextureCoordsOffset = reader.ReadInt32();
             TrianglesOffset = reader.ReadInt32();
             FramesOffset = reader.ReadInt32();
-            GLCommandsOffset = reader.ReadInt32();
+            GlCommandsOffset = reader.ReadInt32();
             EndOffset = reader.ReadInt32();
             reader.Close();
         }

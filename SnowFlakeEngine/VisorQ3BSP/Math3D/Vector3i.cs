@@ -1,26 +1,26 @@
 ﻿namespace Math3D
 {
-    public class Vector3i
+    public class Vector3I
     {
         public int X;
         public int Y;
         public int Z;
 
-        public Vector3i()
+        public Vector3I()
         {
             X = 0;
             Y = 0;
             Z = 0;
         }
 
-        public Vector3i(int X, int Y, int Z)
+        public Vector3I(int x, int y, int z)
         {
-            this.X = 0;
-            this.Y = 0;
-            this.Z = 0;
-            this.X = X;
-            this.Y = Y;
-            this.Z = Z;
+            X = 0;
+            Y = 0;
+            Z = 0;
+            X = x;
+            Y = y;
+            Z = z;
         }
     }
 }

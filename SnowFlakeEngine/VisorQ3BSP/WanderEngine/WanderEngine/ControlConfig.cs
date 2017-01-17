@@ -29,7 +29,7 @@ using OpenTK.Input;
 namespace SnowflakeEngine.WanderEngine
 {
     // miki-input-off using Microsoft.DirectX.DirectInput;
-    
+
     public class ControlConfig
     {
         public bool InvertMouse = false;

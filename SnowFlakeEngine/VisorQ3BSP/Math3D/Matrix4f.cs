@@ -26,15 +26,15 @@ using System;
 namespace Math3D
 {
     [Serializable]
-    public class Matrix4f
+    public class Matrix4F
     {
-        private static readonly Matrix4f auxMat4 = new Matrix4f();
-        private static Matrix4f resultadoMult = new Matrix4f();
+        private static readonly Matrix4F AuxMat4 = new Matrix4F();
+        private static Matrix4F _resultadoMult = new Matrix4F();
         // Quaternion temporal
-        private readonly Quaternion4f tempQRot = new Quaternion4f();
-        private Vector3f tempV3 = new Vector3f();
+        private readonly Quaternion4F _tempQRot = new Quaternion4F();
+        private Vector3F _tempV3 = new Vector3F();
 
-        public float[] values = new float[16]
+        public float[] Values = new float[16]
         {
             1, 0, 0, 0, // Right        (values[0]..values[3]
             0, 1, 0, 0, // Up           (values[4]..values[7]
@@ -47,7 +47,7 @@ namespace Math3D
         /// </summary>
         /// <param name="grados"></param>
         /// <param name="ejeRotacion"></param>
-        public virtual void Rotation(float grados, Vector3f ejeRotacion)
+        public virtual void Rotation(float grados, Vector3F ejeRotacion)
         {
             Rotation(grados, ejeRotacion.X, ejeRotacion.Y, ejeRotacion.Z);
         }
@@ -61,13 +61,13 @@ namespace Math3D
         /// <param name="ejeZ"></param>
         public virtual void Rotation(float grados, float ejeX, float ejeY, float ejeZ)
         {
-            GetTranslation(ref tempV3);
-            tempQRot.SetIdentity();
-            tempQRot.Rotation(MathHelp.RadiansFromDegrees(grados), ejeX, ejeY, ejeZ);
+            GetTranslation(ref _tempV3);
+            _tempQRot.SetIdentity();
+            _tempQRot.Rotation(MathHelp.RadiansFromDegrees(grados), ejeX, ejeY, ejeZ);
             //tempQRot.GetMatriz4(ref auxMat4);
             //this.CopiaDesde(auxMat4);
-            FromQuaternion(tempQRot);
-            Translation3f = tempV3;
+            FromQuaternion(_tempQRot);
+            Translation3F = _tempV3;
         }
 
         /// <summary>
@@ -75,11 +75,11 @@ namespace Math3D
         ///     <para>this = this * Quaternion</para>
         /// </summary>
         /// <param name="qRot"></param>
-        public virtual void Rotate(Quaternion4f qRot)
+        public virtual void Rotate(Quaternion4F qRot)
         {
             //qRot.GetMatriz4(ref auxMat4);
-            auxMat4.FromQuaternion(qRot);
-            MultipliesBy(auxMat4);
+            AuxMat4.FromQuaternion(qRot);
+            MultipliesBy(AuxMat4);
         }
 
         /// <summary>
@@ -87,10 +87,10 @@ namespace Math3D
         ///     <para>this = this * mat4</para>
         /// </summary>
         /// <param name="mat"></param>
-        public virtual void MultipliesBy(Matrix4f mat4)
+        public virtual void MultipliesBy(Matrix4F mat4)
         {
-            MultipliesBy(mat4, ref resultadoMult);
-            CopiaDesde(resultadoMult);
+            MultipliesBy(mat4, ref _resultadoMult);
+            CopiaDesde(_resultadoMult);
         }
 
         /// <summary>
@@ -99,84 +99,84 @@ namespace Math3D
         ///     <para>mat4result = this * mat4</para>
         /// </summary>
         /// <param name="mat4"></param>
-        /// <param name="mat4result"></param>
-        public virtual void MultipliesBy(Matrix4f mat4, ref Matrix4f mat4result)
+        /// <param name="mat4Result"></param>
+        public virtual void MultipliesBy(Matrix4F mat4, ref Matrix4F mat4Result)
         {
-            mat4result.SetIdentity();
+            mat4Result.SetIdentity();
 
-            mat4result.values[00] = values[00]*mat4.values[00] + values[04]*mat4.values[01] + values[08]*mat4.values[02] +
-                                    values[12]*mat4.values[03];
-            mat4result.values[01] = values[01]*mat4.values[00] + values[05]*mat4.values[01] + values[09]*mat4.values[02] +
-                                    values[13]*mat4.values[03];
-            mat4result.values[02] = values[02]*mat4.values[00] + values[06]*mat4.values[01] + values[10]*mat4.values[02] +
-                                    values[14]*mat4.values[03];
-            mat4result.values[03] = values[03]*mat4.values[00] + values[07]*mat4.values[01] + values[11]*mat4.values[02] +
-                                    values[15]*mat4.values[03];
+            mat4Result.Values[00] = Values[00]*mat4.Values[00] + Values[04]*mat4.Values[01] + Values[08]*mat4.Values[02] +
+                                    Values[12]*mat4.Values[03];
+            mat4Result.Values[01] = Values[01]*mat4.Values[00] + Values[05]*mat4.Values[01] + Values[09]*mat4.Values[02] +
+                                    Values[13]*mat4.Values[03];
+            mat4Result.Values[02] = Values[02]*mat4.Values[00] + Values[06]*mat4.Values[01] + Values[10]*mat4.Values[02] +
+                                    Values[14]*mat4.Values[03];
+            mat4Result.Values[03] = Values[03]*mat4.Values[00] + Values[07]*mat4.Values[01] + Values[11]*mat4.Values[02] +
+                                    Values[15]*mat4.Values[03];
 
-            mat4result.values[04] = values[00]*mat4.values[04] + values[04]*mat4.values[05] + values[08]*mat4.values[06] +
-                                    values[12]*mat4.values[07];
-            mat4result.values[05] = values[01]*mat4.values[04] + values[05]*mat4.values[05] + values[09]*mat4.values[06] +
-                                    values[13]*mat4.values[07];
-            mat4result.values[06] = values[02]*mat4.values[04] + values[06]*mat4.values[05] + values[10]*mat4.values[06] +
-                                    values[14]*mat4.values[07];
-            mat4result.values[07] = values[03]*mat4.values[04] + values[07]*mat4.values[05] + values[11]*mat4.values[06] +
-                                    values[15]*mat4.values[07];
+            mat4Result.Values[04] = Values[00]*mat4.Values[04] + Values[04]*mat4.Values[05] + Values[08]*mat4.Values[06] +
+                                    Values[12]*mat4.Values[07];
+            mat4Result.Values[05] = Values[01]*mat4.Values[04] + Values[05]*mat4.Values[05] + Values[09]*mat4.Values[06] +
+                                    Values[13]*mat4.Values[07];
+            mat4Result.Values[06] = Values[02]*mat4.Values[04] + Values[06]*mat4.Values[05] + Values[10]*mat4.Values[06] +
+                                    Values[14]*mat4.Values[07];
+            mat4Result.Values[07] = Values[03]*mat4.Values[04] + Values[07]*mat4.Values[05] + Values[11]*mat4.Values[06] +
+                                    Values[15]*mat4.Values[07];
 
-            mat4result.values[08] = values[00]*mat4.values[08] + values[04]*mat4.values[09] + values[08]*mat4.values[10] +
-                                    values[12]*mat4.values[11];
-            mat4result.values[09] = values[01]*mat4.values[08] + values[05]*mat4.values[09] + values[09]*mat4.values[10] +
-                                    values[13]*mat4.values[11];
-            mat4result.values[10] = values[02]*mat4.values[08] + values[06]*mat4.values[09] + values[10]*mat4.values[10] +
-                                    values[14]*mat4.values[11];
-            mat4result.values[11] = values[03]*mat4.values[08] + values[07]*mat4.values[09] + values[11]*mat4.values[10] +
-                                    values[15]*mat4.values[11];
+            mat4Result.Values[08] = Values[00]*mat4.Values[08] + Values[04]*mat4.Values[09] + Values[08]*mat4.Values[10] +
+                                    Values[12]*mat4.Values[11];
+            mat4Result.Values[09] = Values[01]*mat4.Values[08] + Values[05]*mat4.Values[09] + Values[09]*mat4.Values[10] +
+                                    Values[13]*mat4.Values[11];
+            mat4Result.Values[10] = Values[02]*mat4.Values[08] + Values[06]*mat4.Values[09] + Values[10]*mat4.Values[10] +
+                                    Values[14]*mat4.Values[11];
+            mat4Result.Values[11] = Values[03]*mat4.Values[08] + Values[07]*mat4.Values[09] + Values[11]*mat4.Values[10] +
+                                    Values[15]*mat4.Values[11];
 
-            mat4result.values[12] = values[00]*mat4.values[12] + values[04]*mat4.values[13] + values[08]*mat4.values[14] +
-                                    values[12]*mat4.values[15];
-            mat4result.values[13] = values[01]*mat4.values[12] + values[05]*mat4.values[13] + values[09]*mat4.values[14] +
-                                    values[13]*mat4.values[15];
-            mat4result.values[14] = values[02]*mat4.values[12] + values[06]*mat4.values[13] + values[10]*mat4.values[14] +
-                                    values[14]*mat4.values[15];
-            mat4result.values[15] = values[03]*mat4.values[12] + values[07]*mat4.values[13] + values[11]*mat4.values[14] +
-                                    values[15]*mat4.values[15];
+            mat4Result.Values[12] = Values[00]*mat4.Values[12] + Values[04]*mat4.Values[13] + Values[08]*mat4.Values[14] +
+                                    Values[12]*mat4.Values[15];
+            mat4Result.Values[13] = Values[01]*mat4.Values[12] + Values[05]*mat4.Values[13] + Values[09]*mat4.Values[14] +
+                                    Values[13]*mat4.Values[15];
+            mat4Result.Values[14] = Values[02]*mat4.Values[12] + Values[06]*mat4.Values[13] + Values[10]*mat4.Values[14] +
+                                    Values[14]*mat4.Values[15];
+            mat4Result.Values[15] = Values[03]*mat4.Values[12] + Values[07]*mat4.Values[13] + Values[11]*mat4.Values[14] +
+                                    Values[15]*mat4.Values[15];
         }
 
         /// <summary>
         ///     CopiaDesde los valores del array de la matriz pasada como parámetro al array de esta.
         /// </summary>
         /// <param name="mat4"></param>
-        public void CopiaDesde(Matrix4f mat)
+        public void CopiaDesde(Matrix4F mat)
         {
-            values[00] = mat.values[00];
-            values[04] = mat.values[04];
-            values[08] = mat.values[08];
-            values[12] = mat.values[12];
-            values[01] = mat.values[01];
-            values[05] = mat.values[05];
-            values[09] = mat.values[09];
-            values[13] = mat.values[13];
-            values[02] = mat.values[02];
-            values[06] = mat.values[06];
-            values[10] = mat.values[10];
-            values[14] = mat.values[14];
-            values[03] = mat.values[03];
-            values[07] = mat.values[07];
-            values[11] = mat.values[11];
-            values[15] = mat.values[15];
+            Values[00] = mat.Values[00];
+            Values[04] = mat.Values[04];
+            Values[08] = mat.Values[08];
+            Values[12] = mat.Values[12];
+            Values[01] = mat.Values[01];
+            Values[05] = mat.Values[05];
+            Values[09] = mat.Values[09];
+            Values[13] = mat.Values[13];
+            Values[02] = mat.Values[02];
+            Values[06] = mat.Values[06];
+            Values[10] = mat.Values[10];
+            Values[14] = mat.Values[14];
+            Values[03] = mat.Values[03];
+            Values[07] = mat.Values[07];
+            Values[11] = mat.Values[11];
+            Values[15] = mat.Values[15];
         }
 
         /// <summary>
         ///     pV = this * pV
         /// </summary>
         /// <param name="pV"></param>
-        public virtual void TransformVector(ref Vector3f pV)
+        public virtual void TransformVector(ref Vector3F pV)
         {
             float auxX, auxY, auxZ;
 
-            var inverseW = 1.0f/(values[3] + values[7] + values[11] + values[15]);
-            auxX = ((values[0]*pV.X) + (values[4]*pV.Y) + (values[8]*pV.Z) + values[12])*inverseW;
-            auxY = ((values[1]*pV.X) + (values[5]*pV.Y) + (values[9]*pV.Z) + values[13])*inverseW;
-            auxZ = ((values[2]*pV.X) + (values[6]*pV.Y) + (values[10]*pV.Z) + values[14])*inverseW;
+            var inverseW = 1.0f/(Values[3] + Values[7] + Values[11] + Values[15]);
+            auxX = ((Values[0]*pV.X) + (Values[4]*pV.Y) + (Values[8]*pV.Z) + Values[12])*inverseW;
+            auxY = ((Values[1]*pV.X) + (Values[5]*pV.Y) + (Values[9]*pV.Z) + Values[13])*inverseW;
+            auxZ = ((Values[2]*pV.X) + (Values[6]*pV.Y) + (Values[10]*pV.Z) + Values[14])*inverseW;
 
             pV.X = auxX;
             pV.Y = auxY;
@@ -187,12 +187,12 @@ namespace Math3D
         ///     Copia los valores de esta matriz desde la matriz pasada como parámetro
         /// </summary>
         /// <param Name="matrix"></param>
-        public void CopyFrom(Matrix4f matrix)
+        public void CopyFrom(Matrix4F matrix)
         {
-            matrix.values.CopyTo(values, 0);
+            matrix.Values.CopyTo(Values, 0);
         }
 
-        public void FromQuaternion(Quaternion4f q)
+        public void FromQuaternion(Quaternion4F q)
         {
             SetIdentity();
 
@@ -205,17 +205,17 @@ namespace Math3D
             // Set the matrix elements.  There is still a little more
             // opportunity for optimization due to the many common
             // subexpressions.  We'll let the compiler handle that...
-            values[0] = 1.0f - (yy*q.Y) - (zz*q.Z);
-            values[1] = (xx*q.Y) + (ww*q.Z);
-            values[2] = (xx*q.Z) - (ww*q.Y);
+            Values[0] = 1.0f - (yy*q.Y) - (zz*q.Z);
+            Values[1] = (xx*q.Y) + (ww*q.Z);
+            Values[2] = (xx*q.Z) - (ww*q.Y);
 
-            values[4] = (xx*q.Y) - (ww*q.Z);
-            values[5] = 1.0f - (xx*q.X) - (zz*q.Z);
-            values[6] = (yy*q.Z) + (ww*q.X);
+            Values[4] = (xx*q.Y) - (ww*q.Z);
+            Values[5] = 1.0f - (xx*q.X) - (zz*q.Z);
+            Values[6] = (yy*q.Z) + (ww*q.X);
 
-            values[8] = (xx*q.Z) + (ww*q.Y);
-            values[9] = (yy*q.Z) - (ww*q.X);
-            values[10] = 1.0f - (xx*q.X) - (yy*q.Y);
+            Values[8] = (xx*q.Z) + (ww*q.Y);
+            Values[9] = (yy*q.Z) - (ww*q.X);
+            Values[10] = 1.0f - (xx*q.X) - (yy*q.Y);
         }
 
         #region Constructor
@@ -223,7 +223,7 @@ namespace Math3D
         /// <summary>
         ///     Crea una nueva instancia inicializada a la matriz identidad
         /// </summary>
-        public Matrix4f()
+        public Matrix4F()
         {
         }
 
@@ -231,7 +231,7 @@ namespace Math3D
         ///     Crea una nueva instancia inicializados sus valores a los valores de la matriz parámetro
         /// </summary>
         /// <param Name="matrix"></param>
-        public Matrix4f(Matrix4f matrix)
+        public Matrix4F(Matrix4F matrix)
         {
             CopyFrom(matrix);
         }
@@ -242,42 +242,42 @@ namespace Math3D
 
         public void SetIdentity()
         {
-            values[00] = 1;
-            values[01] = 0;
-            values[02] = 0;
-            values[03] = 0;
-            values[04] = 0;
-            values[05] = 1;
-            values[06] = 0;
-            values[07] = 0;
-            values[08] = 0;
-            values[09] = 0;
-            values[10] = 1;
-            values[11] = 0;
-            values[12] = 0;
-            values[13] = 0;
-            values[14] = 0;
-            values[15] = 1;
+            Values[00] = 1;
+            Values[01] = 0;
+            Values[02] = 0;
+            Values[03] = 0;
+            Values[04] = 0;
+            Values[05] = 1;
+            Values[06] = 0;
+            Values[07] = 0;
+            Values[08] = 0;
+            Values[09] = 0;
+            Values[10] = 1;
+            Values[11] = 0;
+            Values[12] = 0;
+            Values[13] = 0;
+            Values[14] = 0;
+            Values[15] = 1;
         }
 
         public void SetZero()
         {
-            values[00] = 0;
-            values[01] = 0;
-            values[02] = 0;
-            values[03] = 0;
-            values[04] = 0;
-            values[05] = 0;
-            values[06] = 0;
-            values[07] = 0;
-            values[08] = 0;
-            values[09] = 0;
-            values[10] = 0;
-            values[11] = 0;
-            values[12] = 0;
-            values[13] = 0;
-            values[14] = 0;
-            values[15] = 0;
+            Values[00] = 0;
+            Values[01] = 0;
+            Values[02] = 0;
+            Values[03] = 0;
+            Values[04] = 0;
+            Values[05] = 0;
+            Values[06] = 0;
+            Values[07] = 0;
+            Values[08] = 0;
+            Values[09] = 0;
+            Values[10] = 0;
+            Values[11] = 0;
+            Values[12] = 0;
+            Values[13] = 0;
+            Values[14] = 0;
+            Values[15] = 0;
         }
 
         #endregion SetIdentity() & SetZero()
@@ -287,95 +287,95 @@ namespace Math3D
         #region Set-Get Vectores Unitarios (X, Y, Z)
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector3f" /> que corresponde al vector unitario X de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector3F" /> que corresponde al vector unitario X de esta matriz
         ///     Set: Establece los valores del vector unitario X de esta matriz
         /// </summary>
-        public Vector3f Right3f
+        public Vector3F Right3F
         {
-            get { return new Vector3f(values[0], values[1], values[2]); }
+            get { return new Vector3F(Values[0], Values[1], Values[2]); }
             set
             {
-                values[0] = value.X;
-                values[1] = value.Y;
-                values[2] = value.Z;
+                Values[0] = value.X;
+                Values[1] = value.Y;
+                Values[2] = value.Z;
             }
         }
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector3f" /> que corresponde al vector unitario Y de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector3F" /> que corresponde al vector unitario Y de esta matriz
         ///     Set: Establece los valores del vector unitario Y de esta matriz
         /// </summary>
-        public Vector3f Up3f
+        public Vector3F Up3F
         {
-            get { return new Vector3f(values[4], values[5], values[6]); }
+            get { return new Vector3F(Values[4], Values[5], Values[6]); }
             set
             {
-                values[4] = value.X;
-                values[5] = value.Y;
-                values[6] = value.Z;
+                Values[4] = value.X;
+                Values[5] = value.Y;
+                Values[6] = value.Z;
             }
         }
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector3f" /> que corresponde al vector unitario Z de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector3F" /> que corresponde al vector unitario Z de esta matriz
         ///     Set: Establece los valores del vector unitario Z de esta matriz
         /// </summary>
-        public Vector3f Forward3f
+        public Vector3F Forward3F
         {
-            get { return new Vector3f(values[8], values[9], values[10]); }
+            get { return new Vector3F(Values[8], Values[9], Values[10]); }
             set
             {
-                values[8] = value.X;
-                values[9] = value.Y;
-                values[10] = value.Z;
+                Values[8] = value.X;
+                Values[9] = value.Y;
+                Values[10] = value.Z;
             }
         }
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector4f" /> que corresponde al vector unitario X de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector4F" /> que corresponde al vector unitario X de esta matriz
         ///     Set: Establece los valores del vector unitario X de esta matriz
         /// </summary>
-        public Vector4f Right4f
+        public Vector4F Right4F
         {
-            get { return new Vector4f(values[0], values[1], values[2], values[3]); }
+            get { return new Vector4F(Values[0], Values[1], Values[2], Values[3]); }
             set
             {
-                values[0] = value.X;
-                values[1] = value.Y;
-                values[2] = value.Z;
-                values[3] = value.W;
+                Values[0] = value.X;
+                Values[1] = value.Y;
+                Values[2] = value.Z;
+                Values[3] = value.W;
             }
         }
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector4f" /> que corresponde al vector unitario Y de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector4F" /> que corresponde al vector unitario Y de esta matriz
         ///     Set: Establece los valores del vector unitario Y de esta matriz
         /// </summary>
-        public Vector4f Up4f
+        public Vector4F Up4F
         {
-            get { return new Vector4f(values[4], values[5], values[6], values[7]); }
+            get { return new Vector4F(Values[4], Values[5], Values[6], Values[7]); }
             set
             {
-                values[4] = value.X;
-                values[5] = value.Y;
-                values[6] = value.Z;
-                values[7] = value.W;
+                Values[4] = value.X;
+                Values[5] = value.Y;
+                Values[6] = value.Z;
+                Values[7] = value.W;
             }
         }
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector4f" /> que corresponde al vector unitario Z de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector4F" /> que corresponde al vector unitario Z de esta matriz
         ///     Set: Establece los valores del vector unitario Z de esta matriz
         /// </summary>
-        public Vector4f Forward4f
+        public Vector4F Forward4F
         {
-            get { return new Vector4f(values[8], values[9], values[10], values[11]); }
+            get { return new Vector4F(Values[8], Values[9], Values[10], Values[11]); }
             set
             {
-                values[8] = value.X;
-                values[9] = value.Y;
-                values[10] = value.Z;
-                values[11] = value.W;
+                Values[8] = value.X;
+                Values[9] = value.Y;
+                Values[10] = value.Z;
+                Values[11] = value.W;
             }
         }
 
@@ -384,34 +384,34 @@ namespace Math3D
         #region Set-Get Translation
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector3f" /> que corresponde al vector de traslación de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector3F" /> que corresponde al vector de traslación de esta matriz
         ///     Set: Establece los valores del vector traslación de esta matriz
         /// </summary>
-        public Vector3f Translation3f
+        public Vector3F Translation3F
         {
-            get { return new Vector3f(values[12], values[13], values[14]); }
+            get { return new Vector3F(Values[12], Values[13], Values[14]); }
             set
             {
-                values[12] = value.X;
-                values[13] = value.Y;
-                values[14] = value.Z;
-                values[15] = 1f;
+                Values[12] = value.X;
+                Values[13] = value.Y;
+                Values[14] = value.Z;
+                Values[15] = 1f;
             }
         }
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector4f" /> que corresponde al vector de traslación de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector4F" /> que corresponde al vector de traslación de esta matriz
         ///     Set: Establece los valores del vector traslación de esta matriz
         /// </summary>
-        public Vector4f Translation4f
+        public Vector4F Translation4F
         {
-            get { return new Vector4f(values[12], values[13], values[14], values[15]); }
+            get { return new Vector4F(Values[12], Values[13], Values[14], Values[15]); }
             set
             {
-                values[12] = value.X;
-                values[13] = value.Y;
-                values[14] = value.Z;
-                values[15] = value.W;
+                Values[12] = value.X;
+                Values[13] = value.Y;
+                Values[14] = value.Z;
+                Values[15] = value.W;
             }
         }
 
@@ -420,17 +420,17 @@ namespace Math3D
         #region Set-Get SetScalation
 
         /// <summary>
-        ///     Get: Devuelve un nuevo <see cref="Vector3f" /> que corresponde al vector de escalado de esta matriz
+        ///     Get: Devuelve un nuevo <see cref="Vector3F" /> que corresponde al vector de escalado de esta matriz
         ///     Set: Establece los valores del vector de escalado de esta matriz
         /// </summary>
-        public Vector3f Scalation3f
+        public Vector3F Scalation3F
         {
-            get { return new Vector3f(values[0], values[5], values[10]); }
+            get { return new Vector3F(Values[0], Values[5], Values[10]); }
             set
             {
-                values[0] = value.X;
-                values[5] = value.Y;
-                values[10] = value.Z;
+                Values[0] = value.X;
+                Values[5] = value.Y;
+                Values[10] = value.Z;
             }
         }
 
@@ -461,10 +461,10 @@ namespace Math3D
         /// <param name="w"></param>
         public virtual void SetRight(float x, float y, float z, float w)
         {
-            values[0] = x;
-            values[1] = y;
-            values[2] = z;
-            values[3] = w;
+            Values[0] = x;
+            Values[1] = y;
+            Values[2] = z;
+            Values[3] = w;
         }
 
         /// <summary>
@@ -488,10 +488,10 @@ namespace Math3D
         /// <param name="w"></param>
         public virtual void SetUp(float x, float y, float z, float w)
         {
-            values[4] = x;
-            values[5] = y;
-            values[6] = z;
-            values[7] = w;
+            Values[4] = x;
+            Values[5] = y;
+            Values[6] = z;
+            Values[7] = w;
         }
 
         /// <summary>
@@ -515,10 +515,10 @@ namespace Math3D
         /// <param name="w"></param>
         public virtual void SetForward(float x, float y, float z, float w)
         {
-            values[8] = x;
-            values[9] = y;
-            values[10] = z;
-            values[11] = w;
+            Values[8] = x;
+            Values[9] = y;
+            Values[10] = z;
+            Values[11] = w;
         }
 
         /// <summary>
@@ -542,10 +542,10 @@ namespace Math3D
         /// <param name="w"></param>
         public virtual void SetTranslation(float x, float y, float z, float w)
         {
-            values[12] = x;
-            values[13] = y;
-            values[14] = z;
-            values[15] = w;
+            Values[12] = x;
+            Values[13] = y;
+            Values[14] = z;
+            Values[15] = w;
         }
 
         #endregion Set-Vectores unitarios (X, Y, Z) y translación
@@ -556,88 +556,88 @@ namespace Math3D
         ///     Establece las componentes del vector parámetro a los valores del vector unitario X de esta matriz.
         /// </summary>
         /// <param Name="up"></param>
-        public void GetRight(ref Vector3f right)
+        public void GetRight(ref Vector3F right)
         {
-            right.X = values[0];
-            right.Y = values[1];
-            right.Z = values[2];
+            right.X = Values[0];
+            right.Y = Values[1];
+            right.Z = Values[2];
         }
 
         /// <summary>
         ///     Establece las componentes del vector parámetro a los valores del vector unitario Y de esta matriz.
         /// </summary>
         /// <param Name="up"></param>
-        public void GetUp(ref Vector3f up)
+        public void GetUp(ref Vector3F up)
         {
-            up.X = values[4];
-            up.Y = values[5];
-            up.Z = values[6];
+            up.X = Values[4];
+            up.Y = Values[5];
+            up.Z = Values[6];
         }
 
         /// <summary>
         ///     Establece las componentes del vector parámetro a los valores del vector unitario Z de esta matriz.
         /// </summary>
         /// <param Name="up"></param>
-        public void GetForward(ref Vector3f forward)
+        public void GetForward(ref Vector3F forward)
         {
-            forward.X = values[8];
-            forward.Y = values[9];
-            forward.Z = values[10];
+            forward.X = Values[8];
+            forward.Y = Values[9];
+            forward.Z = Values[10];
         }
 
         /// <summary>
         ///     Establece las componentes del vector parámetro a los valores del vector unitario X de esta matriz.
         /// </summary>
         /// <param Name="up"></param>
-        public void GetRight(ref Vector4f right)
+        public void GetRight(ref Vector4F right)
         {
-            right.X = values[0];
-            right.Y = values[1];
-            right.Z = values[2];
-            right.W = values[3];
+            right.X = Values[0];
+            right.Y = Values[1];
+            right.Z = Values[2];
+            right.W = Values[3];
         }
 
         /// <summary>
         ///     Establece las componentes del vector parámetro a los valores del vector unitario Y de esta matriz.
         /// </summary>
         /// <param Name="up"></param>
-        public void GetUp(ref Vector4f up)
+        public void GetUp(ref Vector4F up)
         {
-            up.X = values[4];
-            up.Y = values[5];
-            up.Z = values[6];
-            up.W = values[7];
+            up.X = Values[4];
+            up.Y = Values[5];
+            up.Z = Values[6];
+            up.W = Values[7];
         }
 
         /// <summary>
         ///     Establece las componentes del vector parámetro a los valores del vector unitario Z de esta matriz.
         /// </summary>
         /// <param Name="up"></param>
-        public void GetForward(ref Vector4f forward)
+        public void GetForward(ref Vector4F forward)
         {
-            forward.X = values[8];
-            forward.Y = values[9];
-            forward.Z = values[10];
-            forward.W = values[11];
+            forward.X = Values[8];
+            forward.Y = Values[9];
+            forward.Z = Values[10];
+            forward.W = Values[11];
         }
 
         #endregion Get(ref Vector) Vectores unitarios (X, Y, Z)
 
         #region Get(ref Vector) Translation
 
-        public void GetTranslation(ref Vector3f translation)
+        public void GetTranslation(ref Vector3F translation)
         {
-            translation.X = values[12];
-            translation.Y = values[13];
-            translation.Z = values[14];
+            translation.X = Values[12];
+            translation.Y = Values[13];
+            translation.Z = Values[14];
         }
 
-        public void GetTranslation(ref Vector4f translation)
+        public void GetTranslation(ref Vector4F translation)
         {
-            translation.X = values[12];
-            translation.Y = values[13];
-            translation.Z = values[14];
-            translation.W = values[15];
+            translation.X = Values[12];
+            translation.Y = Values[13];
+            translation.Z = Values[14];
+            translation.W = Values[15];
         }
 
         #endregion Get(ref Vector) Translation
@@ -649,7 +649,7 @@ namespace Math3D
         ///     <para>this = this * MatEscalado(Vector3f)</para>
         /// </summary>
         /// <param name="vEscala"></param>
-        public virtual void Scale(Vector3f vEscala)
+        public virtual void Scale(Vector3F vEscala)
         {
             Scale(vEscala.X, vEscala.Y, vEscala.Z);
         }
@@ -661,9 +661,9 @@ namespace Math3D
         /// <param name="vEscala"></param>
         public virtual void Scale(float x, float y, float z)
         {
-            auxMat4.SetIdentity();
-            auxMat4.SetScalation(x, y, z);
-            MultipliesBy(auxMat4);
+            AuxMat4.SetIdentity();
+            AuxMat4.SetScalation(x, y, z);
+            MultipliesBy(AuxMat4);
         }
 
         /// <summary>
@@ -672,7 +672,7 @@ namespace Math3D
         /// <param name="ancho"></param>
         /// <param name="alto"></param>
         /// <param name="Z"></param>
-        public virtual void SetScalation(Vector3f v3Scale)
+        public virtual void SetScalation(Vector3F v3Scale)
         {
             SetScalation(v3Scale.X, v3Scale.Y, v3Scale.Z);
         }
@@ -685,9 +685,9 @@ namespace Math3D
         /// <param name="Z"></param>
         public virtual void SetScalation(float x, float y, float z)
         {
-            values[0] = x;
-            values[5] = y;
-            values[10] = z;
+            Values[0] = x;
+            Values[5] = y;
+            Values[10] = z;
         }
 
         #endregion  Scale - SetScalation

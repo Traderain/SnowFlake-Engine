@@ -37,12 +37,12 @@ namespace SnowflakeEngine.WanderEngine
             Value = "";
         }
 
-        public ArgValue(string Argument, string Value)
+        public ArgValue(string argument, string value)
         {
-            this.Argument = "";
-            this.Value = "";
-            this.Argument = Argument;
-            this.Value = Value;
+            Argument = "";
+            Value = "";
+            Argument = argument;
+            Value = value;
         }
     }
 }

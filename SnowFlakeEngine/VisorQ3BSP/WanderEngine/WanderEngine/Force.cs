@@ -30,129 +30,129 @@ namespace SnowflakeEngine.WanderEngine
 {
     public class Force
     {
-        private readonly Vector3f Velocity = new Vector3f();
-        public Vector3f Acceleration = new Vector3f();
-        public Vector3f Direction = new Vector3f();
-        public Vector3f MaxVelocity = new Vector3f();
-        public Vector3f MinVelocity = new Vector3f();
+        private readonly Vector3F _velocity = new Vector3F();
+        public Vector3F Acceleration = new Vector3F();
+        public Vector3F Direction = new Vector3F();
+        public Vector3F MaxVelocity = new Vector3F();
+        public Vector3F MinVelocity = new Vector3F();
 
-        public void AddVelocityX(float X)
+        public void AddVelocityX(float x)
         {
-            Velocity.X += X;
-            if (Velocity.X > MaxVelocity.X)
+            _velocity.X += x;
+            if (_velocity.X > MaxVelocity.X)
             {
-                Velocity.X = MaxVelocity.X;
+                _velocity.X = MaxVelocity.X;
             }
-            if (Velocity.X < MinVelocity.X)
+            if (_velocity.X < MinVelocity.X)
             {
-                Velocity.X = MinVelocity.X;
+                _velocity.X = MinVelocity.X;
             }
         }
 
-        public void AddVelocityY(float Y)
+        public void AddVelocityY(float y)
         {
-            Velocity.Y += Y;
-            if (Velocity.Y > MaxVelocity.Y)
+            _velocity.Y += y;
+            if (_velocity.Y > MaxVelocity.Y)
             {
-                Velocity.Y = MaxVelocity.Y;
+                _velocity.Y = MaxVelocity.Y;
             }
-            if (Velocity.Y < MinVelocity.Y)
+            if (_velocity.Y < MinVelocity.Y)
             {
-                Velocity.Y = MinVelocity.Y;
+                _velocity.Y = MinVelocity.Y;
             }
         }
 
-        public void AddVelocityZ(float Z)
+        public void AddVelocityZ(float z)
         {
-            Velocity.Z += Z;
-            if (Velocity.Z > MaxVelocity.Z)
+            _velocity.Z += z;
+            if (_velocity.Z > MaxVelocity.Z)
             {
-                Velocity.Z = MaxVelocity.Z;
+                _velocity.Z = MaxVelocity.Z;
             }
-            if (Velocity.Z < MinVelocity.Z)
+            if (_velocity.Z < MinVelocity.Z)
             {
-                Velocity.Z = MinVelocity.Z;
+                _velocity.Z = MinVelocity.Z;
             }
         }
 
         public float GetVelocityX()
         {
-            return Velocity.X;
+            return _velocity.X;
         }
 
         public float GetVelocityY()
         {
-            return Velocity.Y;
+            return _velocity.Y;
         }
 
         public float GetVelocityZ()
         {
-            return Velocity.Z;
+            return _velocity.Z;
         }
 
-        public void SetVelocity(float X, float Y, float Z)
+        public void SetVelocity(float x, float y, float z)
         {
-            Velocity.X = X;
-            Velocity.Y = Y;
-            Velocity.Z = Z;
-            if (Velocity.X > MaxVelocity.X)
+            _velocity.X = x;
+            _velocity.Y = y;
+            _velocity.Z = z;
+            if (_velocity.X > MaxVelocity.X)
             {
-                Velocity.X = MaxVelocity.X;
+                _velocity.X = MaxVelocity.X;
             }
-            if (Velocity.Y > MaxVelocity.Y)
+            if (_velocity.Y > MaxVelocity.Y)
             {
-                Velocity.Y = MaxVelocity.Y;
+                _velocity.Y = MaxVelocity.Y;
             }
-            if (Velocity.Z > MaxVelocity.Z)
+            if (_velocity.Z > MaxVelocity.Z)
             {
-                Velocity.Z = MaxVelocity.Z;
+                _velocity.Z = MaxVelocity.Z;
             }
-            if (Velocity.X < MinVelocity.X)
+            if (_velocity.X < MinVelocity.X)
             {
-                Velocity.X = MinVelocity.X;
+                _velocity.X = MinVelocity.X;
             }
-            if (Velocity.Y < MinVelocity.Y)
+            if (_velocity.Y < MinVelocity.Y)
             {
-                Velocity.Y = MinVelocity.Y;
+                _velocity.Y = MinVelocity.Y;
             }
-            if (Velocity.Z < MinVelocity.Z)
+            if (_velocity.Z < MinVelocity.Z)
             {
-                Velocity.Z = MinVelocity.Z;
+                _velocity.Z = MinVelocity.Z;
             }
         }
 
-        public void Update(Vector3f SourcePoint, float TimeElapsed)
+        public void Update(Vector3F sourcePoint, float timeElapsed)
         {
-            Velocity.X += Acceleration.X*(TimeElapsed*TimeElapsed);
-            Velocity.Y += Acceleration.Y*(TimeElapsed*TimeElapsed);
-            Velocity.Z += Acceleration.Z*(TimeElapsed*TimeElapsed);
-            if (Velocity.X > MaxVelocity.X)
+            _velocity.X += Acceleration.X*(timeElapsed*timeElapsed);
+            _velocity.Y += Acceleration.Y*(timeElapsed*timeElapsed);
+            _velocity.Z += Acceleration.Z*(timeElapsed*timeElapsed);
+            if (_velocity.X > MaxVelocity.X)
             {
-                Velocity.X = MaxVelocity.X;
+                _velocity.X = MaxVelocity.X;
             }
-            if (Velocity.Y > MaxVelocity.Y)
+            if (_velocity.Y > MaxVelocity.Y)
             {
-                Velocity.Y = MaxVelocity.Y;
+                _velocity.Y = MaxVelocity.Y;
             }
-            if (Velocity.Z > MaxVelocity.Z)
+            if (_velocity.Z > MaxVelocity.Z)
             {
-                Velocity.Z = MaxVelocity.Z;
+                _velocity.Z = MaxVelocity.Z;
             }
-            if (Velocity.X < MinVelocity.X)
+            if (_velocity.X < MinVelocity.X)
             {
-                Velocity.X = MinVelocity.X;
+                _velocity.X = MinVelocity.X;
             }
-            if (Velocity.Y < MinVelocity.Y)
+            if (_velocity.Y < MinVelocity.Y)
             {
-                Velocity.Y = MinVelocity.Y;
+                _velocity.Y = MinVelocity.Y;
             }
-            if (Velocity.Z < MinVelocity.Z)
+            if (_velocity.Z < MinVelocity.Z)
             {
-                Velocity.Z = MinVelocity.Z;
+                _velocity.Z = MinVelocity.Z;
             }
-            SourcePoint.X += (Direction.X*Velocity.X)*TimeElapsed;
-            SourcePoint.Y += (Direction.Y*Velocity.Y)*TimeElapsed;
-            SourcePoint.Z += (Direction.Z*Velocity.Z)*TimeElapsed;
+            sourcePoint.X += (Direction.X*_velocity.X)*timeElapsed;
+            sourcePoint.Y += (Direction.Y*_velocity.Y)*timeElapsed;
+            sourcePoint.Z += (Direction.Z*_velocity.Z)*timeElapsed;
         }
     }
 }

@@ -43,16 +43,16 @@ namespace SnowflakeEngine.WanderEngine
             D = 0f;
         }
 
-        public Plane(float A, float B, float C, float D)
+        public Plane(float a, float b, float c, float d)
         {
-            this.A = 0f;
-            this.B = 0f;
-            this.C = 0f;
-            this.D = 0f;
-            this.A = A;
-            this.B = B;
-            this.C = C;
-            this.D = D;
+            A = 0f;
+            B = 0f;
+            C = 0f;
+            D = 0f;
+            A = a;
+            B = b;
+            C = c;
+            D = d;
         }
 
         public void Normalize()

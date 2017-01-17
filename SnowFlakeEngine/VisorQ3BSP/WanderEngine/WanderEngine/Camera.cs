@@ -32,173 +32,173 @@ namespace SnowflakeEngine.WanderEngine
     public class Camera
     {
         public float Pitch;
-        public Vector3f Position;
-        public Vector3f Strafe;
-        public Vector3f UpVector;
-        public Vector3f View;
+        public Vector3F Position;
+        public Vector3F Strafe;
+        public Vector3F UpVector;
+        public Vector3F View;
         public float Yaw;
 
         public Camera()
         {
-            Position = new Vector3f(0f, 0f, 0f);
-            View = new Vector3f(0f, 0f, 1f);
-            UpVector = new Vector3f(0f, 1f, 0f);
-            Strafe = new Vector3f();
+            Position = new Vector3F(0f, 0f, 0f);
+            View = new Vector3F(0f, 0f, 1f);
+            UpVector = new Vector3F(0f, 1f, 0f);
+            Strafe = new Vector3F();
             Pitch = 0f;
             Yaw = 0f;
             SetMouseView(0f, 0f);
         }
 
-        public Camera(Vector3f Position, Vector3f View, Vector3f UpVector)
+        public Camera(Vector3F position, Vector3F view, Vector3F upVector)
         {
-            this.Position = new Vector3f(0f, 0f, 0f);
-            this.View = new Vector3f(0f, 0f, 1f);
-            this.UpVector = new Vector3f(0f, 1f, 0f);
-            Strafe = new Vector3f();
+            Position = new Vector3F(0f, 0f, 0f);
+            View = new Vector3F(0f, 0f, 1f);
+            UpVector = new Vector3F(0f, 1f, 0f);
+            Strafe = new Vector3F();
             Pitch = 0f;
             Yaw = 0f;
-            this.Position = Position;
-            this.View = View;
-            this.UpVector = UpVector;
+            Position = position;
+            View = view;
+            UpVector = upVector;
         }
 
-        public void MoveCamera(float Speed)
+        public void MoveCamera(float speed)
         {
             var vector = View - Position;
             vector.Normalize();
-            var num = vector.X*Speed;
-            var num2 = vector.Z*Speed;
+            var num = vector.X*speed;
+            var num2 = vector.Z*speed;
             Position.X += num;
             Position.Z += num2;
             View.X += num;
             View.Z += num2;
         }
 
-        public void MoveCameraTo(Vector3f NewPos)
+        public void MoveCameraTo(Vector3F newPos)
         {
-            View = (View + NewPos) - Position;
-            Position.X = NewPos.X;
-            Position.Y = NewPos.Y;
-            Position.Z = NewPos.Z;
+            View = (View + newPos) - Position;
+            Position.X = newPos.X;
+            Position.Y = newPos.Y;
+            Position.Z = newPos.Z;
         }
 
-        public void MoveCameraUpDown(float Speed)
+        public void MoveCameraUpDown(float speed)
         {
-            Position.Y += Speed;
-            View.Y += Speed;
+            Position.Y += speed;
+            View.Y += speed;
         }
 
-        public Vector3f ProjectPosition(float FrontBack, float LeftRight)
+        public Vector3F ProjectPosition(float frontBack, float leftRight)
         {
-            var vector = new Vector3f(Position.X, Position.Y, Position.Z);
-            if (FrontBack > 0f)
+            var vector = new Vector3F(Position.X, Position.Y, Position.Z);
+            if (frontBack > 0f)
             {
                 var angle = Utility.CapAngle(90f - Yaw);
-                FrontBack = Math.Abs(FrontBack);
-                vector.X += Utility.CosDeg(angle)*FrontBack;
-                vector.Z += -Utility.SinDeg(angle)*FrontBack;
+                frontBack = Math.Abs(frontBack);
+                vector.X += Utility.CosDeg(angle)*frontBack;
+                vector.Z += -Utility.SinDeg(angle)*frontBack;
             }
-            else if (FrontBack < 0f)
+            else if (frontBack < 0f)
             {
                 var num2 = Utility.CapAngle(90f - Yaw);
-                FrontBack = Math.Abs(FrontBack);
-                vector.X -= Utility.CosDeg(num2)*FrontBack;
-                vector.Z += Utility.SinDeg(num2)*FrontBack;
+                frontBack = Math.Abs(frontBack);
+                vector.X -= Utility.CosDeg(num2)*frontBack;
+                vector.Z += Utility.SinDeg(num2)*frontBack;
             }
-            if (LeftRight > 0f)
+            if (leftRight > 0f)
             {
                 var num3 = Utility.CapAngle(-Yaw);
-                LeftRight = Math.Abs(LeftRight);
-                vector.X += Utility.CosDeg(num3)*LeftRight;
-                vector.Z += -Utility.SinDeg(num3)*LeftRight;
+                leftRight = Math.Abs(leftRight);
+                vector.X += Utility.CosDeg(num3)*leftRight;
+                vector.Z += -Utility.SinDeg(num3)*leftRight;
                 return vector;
             }
-            if (LeftRight < 0f)
+            if (leftRight < 0f)
             {
                 var num4 = Utility.CapAngle(-Yaw);
-                LeftRight = Math.Abs(LeftRight);
-                vector.X -= Utility.CosDeg(num4)*LeftRight;
-                vector.Z += Utility.SinDeg(num4)*LeftRight;
+                leftRight = Math.Abs(leftRight);
+                vector.X -= Utility.CosDeg(num4)*leftRight;
+                vector.Z += Utility.SinDeg(num4)*leftRight;
             }
             return vector;
         }
 
-        public Vector3f ProjectPositionWithY(float FrontBack, float LeftRight)
+        public Vector3F ProjectPositionWithY(float frontBack, float leftRight)
         {
-            var vector = new Vector3f(Position.X, Position.Y, Position.Z);
-            if (FrontBack > 0f)
+            var vector = new Vector3F(Position.X, Position.Y, Position.Z);
+            if (frontBack > 0f)
             {
                 var angle = Utility.CapAngle(90f - Yaw);
-                FrontBack = Math.Abs(FrontBack);
-                vector.X += Utility.CosDeg(angle)*FrontBack;
-                vector.Y += Utility.SinDeg(Pitch)*FrontBack;
-                vector.Z += -Utility.SinDeg(angle)*FrontBack;
+                frontBack = Math.Abs(frontBack);
+                vector.X += Utility.CosDeg(angle)*frontBack;
+                vector.Y += Utility.SinDeg(Pitch)*frontBack;
+                vector.Z += -Utility.SinDeg(angle)*frontBack;
             }
-            else if (FrontBack < 0f)
+            else if (frontBack < 0f)
             {
                 var num2 = Utility.CapAngle(90f - Yaw);
-                FrontBack = Math.Abs(FrontBack);
-                vector.X -= Utility.CosDeg(num2)*FrontBack;
-                vector.Y -= Utility.SinDeg(Pitch)*FrontBack;
-                vector.Z += Utility.SinDeg(num2)*FrontBack;
+                frontBack = Math.Abs(frontBack);
+                vector.X -= Utility.CosDeg(num2)*frontBack;
+                vector.Y -= Utility.SinDeg(Pitch)*frontBack;
+                vector.Z += Utility.SinDeg(num2)*frontBack;
             }
-            if (LeftRight > 0f)
+            if (leftRight > 0f)
             {
                 var num3 = Utility.CapAngle(-Yaw);
-                LeftRight = Math.Abs(LeftRight);
-                vector.X += Utility.CosDeg(num3)*LeftRight;
-                vector.Z += -Utility.SinDeg(num3)*LeftRight;
+                leftRight = Math.Abs(leftRight);
+                vector.X += Utility.CosDeg(num3)*leftRight;
+                vector.Z += -Utility.SinDeg(num3)*leftRight;
                 return vector;
             }
-            if (LeftRight < 0f)
+            if (leftRight < 0f)
             {
                 var num4 = Utility.CapAngle(-Yaw);
-                LeftRight = Math.Abs(LeftRight);
-                vector.X -= Utility.CosDeg(num4)*LeftRight;
-                vector.Z += Utility.SinDeg(num4)*LeftRight;
+                leftRight = Math.Abs(leftRight);
+                vector.X -= Utility.CosDeg(num4)*leftRight;
+                vector.Z += Utility.SinDeg(num4)*leftRight;
             }
             return vector;
         }
 
-        public static Vector3f ProjectVector(Vector3f SourceVector, float FrontBack, float LeftRight, float Yaw)
+        public static Vector3F ProjectVector(Vector3F sourceVector, float frontBack, float leftRight, float yaw)
         {
-            var vector = new Vector3f(SourceVector.X, SourceVector.Y, SourceVector.Z);
-            if (FrontBack > 0f)
+            var vector = new Vector3F(sourceVector.X, sourceVector.Y, sourceVector.Z);
+            if (frontBack > 0f)
             {
-                var angle = Utility.CapAngle(90f - Yaw);
-                FrontBack = Math.Abs(FrontBack);
-                vector.X += Utility.CosDeg(angle)*FrontBack;
-                vector.Z += -Utility.SinDeg(angle)*FrontBack;
+                var angle = Utility.CapAngle(90f - yaw);
+                frontBack = Math.Abs(frontBack);
+                vector.X += Utility.CosDeg(angle)*frontBack;
+                vector.Z += -Utility.SinDeg(angle)*frontBack;
             }
-            else if (FrontBack < 0f)
+            else if (frontBack < 0f)
             {
-                var num2 = Utility.CapAngle(90f - Yaw);
-                FrontBack = Math.Abs(FrontBack);
-                vector.X -= Utility.CosDeg(num2)*FrontBack;
-                vector.Z += Utility.SinDeg(num2)*FrontBack;
+                var num2 = Utility.CapAngle(90f - yaw);
+                frontBack = Math.Abs(frontBack);
+                vector.X -= Utility.CosDeg(num2)*frontBack;
+                vector.Z += Utility.SinDeg(num2)*frontBack;
             }
-            if (LeftRight > 0f)
+            if (leftRight > 0f)
             {
-                var num3 = Utility.CapAngle(-Yaw);
-                LeftRight = Math.Abs(LeftRight);
-                vector.X += Utility.CosDeg(num3)*LeftRight;
-                vector.Z += -Utility.SinDeg(num3)*LeftRight;
+                var num3 = Utility.CapAngle(-yaw);
+                leftRight = Math.Abs(leftRight);
+                vector.X += Utility.CosDeg(num3)*leftRight;
+                vector.Z += -Utility.SinDeg(num3)*leftRight;
                 return vector;
             }
-            if (LeftRight < 0f)
+            if (leftRight < 0f)
             {
-                var num4 = Utility.CapAngle(-Yaw);
-                LeftRight = Math.Abs(LeftRight);
-                vector.X -= Utility.CosDeg(num4)*LeftRight;
-                vector.Z += Utility.SinDeg(num4)*LeftRight;
+                var num4 = Utility.CapAngle(-yaw);
+                leftRight = Math.Abs(leftRight);
+                vector.X -= Utility.CosDeg(num4)*leftRight;
+                vector.Z += Utility.SinDeg(num4)*leftRight;
             }
             return vector;
         }
 
-        public void SetMouseView(float Dx, float Dy)
+        public void SetMouseView(float dx, float dy)
         {
-            Pitch += Dy;
-            Yaw -= Dx;
+            Pitch += dy;
+            Yaw -= dx;
             if (Pitch > 90f)
             {
                 Pitch = 90f;
@@ -212,10 +212,10 @@ namespace SnowflakeEngine.WanderEngine
             View.Z = Position.Z - Utility.CosDeg(Yaw);
         }
 
-        public void StrafeCamera(float Speed)
+        public void StrafeCamera(float speed)
         {
-            var num = Strafe.X*Speed;
-            var num2 = Strafe.Z*Speed;
+            var num = Strafe.X*speed;
+            var num2 = Strafe.Z*speed;
             Position.X += num;
             Position.Z += num2;
             View.X += num;
@@ -224,11 +224,11 @@ namespace SnowflakeEngine.WanderEngine
 
         public void UpdateView()
         {
-            var v = new Vector3f();
-            Vector3f.Cross(View - Position, UpVector, ref v);
+            var v = new Vector3F();
+            Vector3F.Cross(View - Position, UpVector, ref v);
             v.Normalize();
             Strafe = v;
-            Engine.gluLookAt(Position.X, Position.Y, Position.Z,
+            Engine.GluLookAt(Position.X, Position.Y, Position.Z,
                 View.X, View.Y, View.Z,
                 UpVector.X, UpVector.Y, UpVector.Z);
         }

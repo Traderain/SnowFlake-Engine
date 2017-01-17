@@ -41,20 +41,20 @@ namespace SnowflakeEngine.WanderEngine
             }
         }
 
-        public bool BoxInFrustrum(float X, float Y, float Z, float X2, float Y2, float Z2)
+        public bool BoxInFrustrum(float x, float y, float z, float x2, float y2, float z2)
         {
             var flag = true;
             for (var i = 0; i < 6; i++)
             {
                 var plane = Planes[i];
-                if ((((((((plane.A*X) + (plane.B*Y)) + (plane.C*Z)) + plane.D) <= 0f) &&
-                      (((((plane.A*X2) + (plane.B*Y)) + (plane.C*Z)) + plane.D) <= 0f)) &&
-                     ((((((plane.A*X) + (plane.B*Y2)) + (plane.C*Z)) + plane.D) <= 0f) &&
-                      (((((plane.A*X2) + (plane.B*Y2)) + (plane.C*Z)) + plane.D) <= 0f))) &&
-                    (((((((plane.A*X) + (plane.B*Y)) + (plane.C*Z2)) + plane.D) <= 0f) &&
-                      (((((plane.A*X2) + (plane.B*Y)) + (plane.C*Z2)) + plane.D) <= 0f)) &&
-                     ((((((plane.A*X) + (plane.B*Y2)) + (plane.C*Z2)) + plane.D) <= 0f) &&
-                      (((((plane.A*X2) + (plane.B*Y2)) + (plane.C*Z2)) + plane.D) <= 0f))))
+                if ((((((((plane.A*x) + (plane.B*y)) + (plane.C*z)) + plane.D) <= 0f) &&
+                      (((((plane.A*x2) + (plane.B*y)) + (plane.C*z)) + plane.D) <= 0f)) &&
+                     ((((((plane.A*x) + (plane.B*y2)) + (plane.C*z)) + plane.D) <= 0f) &&
+                      (((((plane.A*x2) + (plane.B*y2)) + (plane.C*z)) + plane.D) <= 0f))) &&
+                    (((((((plane.A*x) + (plane.B*y)) + (plane.C*z2)) + plane.D) <= 0f) &&
+                      (((((plane.A*x2) + (plane.B*y)) + (plane.C*z2)) + plane.D) <= 0f)) &&
+                     ((((((plane.A*x) + (plane.B*y2)) + (plane.C*z2)) + plane.D) <= 0f) &&
+                      (((((plane.A*x2) + (plane.B*y2)) + (plane.C*z2)) + plane.D) <= 0f))))
                 {
                     flag = false;
                 }
